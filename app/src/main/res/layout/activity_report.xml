@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/background"
+    android:clipChildren="false" android:clipToPadding="false">
+
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="18dp">
+            <TextView android:id="@+id/tvReportTitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Report Lost Item" android:textSize="26sp" android:textStyle="bold"/>
+            <Button android:id="@+id/btnPhoto" android:layout_width="match_parent" android:layout_height="130dp"
+                android:text="Add a photo of the item" android:layout_marginTop="14dp"/>
+            <ImageView android:id="@+id/imgPreview" android:layout_width="match_parent" android:layout_height="180dp"
+                android:visibility="gone" android:scaleType="centerCrop" android:contentDescription="Image Preview"/>
+            <EditText android:id="@+id/etItemName" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="Item name" android:layout_marginTop="12dp"/>
+            <Spinner android:id="@+id/spCategory" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:entries="@array/category_array" android:layout_marginTop="10dp"/>
+            <EditText android:id="@+id/etDescription" android:layout_width="match_parent" android:layout_height="100dp"
+                android:hint="Description" android:gravity="top" android:layout_marginTop="10dp"/>
+            <EditText android:id="@+id/etLocation" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="Location" android:layout_marginTop="10dp"/>
+            <EditText android:id="@+id/etDate" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="Date (YYYY-MM-DD)" android:inputType="date" android:layout_marginTop="10dp"/>
+            <EditText android:id="@+id/etContact" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="Contact information" android:layout_marginTop="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="20dp">
+                <Button
+                    android:id="@+id/btnCancelReport"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="CANCEL"
+                    android:textColor="@color/muted"
+                    style="@style/Widget.Material3.Button.TextButton"/>
+                <Button
+                    android:id="@+id/btnSubmit"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="SUBMIT REPORT"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/bg_blue_button"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/layout_bottom_navigation" />
+
+</LinearLayout>

@@ -1,0 +1,11 @@
+<resources>
+    <string-array name="type_array">
+        <item>ALL</item><item>LOST</item><item>FOUND</item>
+    </string-array>
+    <string-array name="category_array">
+        <item>Personal Item</item><item>Electronics</item><item>Documents</item><item>Clothing</item><item>Other</item>
+    </string-array>
+    <string-array name="search_category_array">
+        <item>ALL</item><item>Personal Item</item><item>Electronics</item><item>Documents</item><item>Clothing</item><item>Other</item>
+    </string-array>
+</resources>

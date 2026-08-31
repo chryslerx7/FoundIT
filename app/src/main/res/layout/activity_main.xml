@@ -1,0 +1,60 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/background"
+    android:clipChildren="false" android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:orientation="vertical">
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="20dp" android:background="@color/blue">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <TextView android:id="@+id/tvHello" android:layout_width="0dp" android:layout_height="wrap_content"
+                    android:layout_weight="1" android:text="FoundIT" android:textColor="@android:color/white"
+                    android:textSize="22sp" android:textStyle="bold"/>
+                <ImageButton android:id="@+id/btnNotifications" android:layout_width="48dp" android:layout_height="48dp"
+                    android:src="@android:drawable/ic_dialog_info" android:contentDescription="Notifications"
+                    android:background="@android:color/transparent"/>
+            </LinearLayout>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Good morning!" android:textColor="@android:color/white" android:textSize="14sp"/>
+            <EditText android:id="@+id/etHomeSearch" android:layout_width="match_parent" android:layout_height="46dp"
+                android:hint="Search lost or found items..." android:singleLine="true"
+                android:background="@drawable/bg_rounded" android:padding="12dp" android:layout_marginTop="14dp"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:padding="12dp">
+            <TextView android:id="@+id/tvLostCount" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:gravity="center" android:text="Lost Items\n0"
+                android:textSize="16sp" android:textStyle="bold" android:background="@drawable/bg_rounded" android:padding="14dp"/>
+            <Space android:layout_width="8dp" android:layout_height="1dp"/>
+            <TextView android:id="@+id/tvFoundCount" android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:gravity="center" android:text="Found Items\n0"
+                android:textSize="16sp" android:textStyle="bold" android:background="@drawable/bg_rounded" android:padding="14dp"/>
+        </LinearLayout>
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Recent Reports" android:textSize="20sp" android:textStyle="bold"
+            android:textColor="@color/text"
+            android:paddingStart="16dp" android:paddingTop="4dp" android:paddingBottom="4dp"/>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefresh" android:layout_width="match_parent" android:layout_height="0dp"
+            android:layout_weight="1">
+            <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerItems" android:layout_width="match_parent" android:layout_height="match_parent"
+                    android:padding="12dp"/>
+                <TextView android:id="@+id/tvEmptyItems" android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:text="No recent reports found."
+                    android:layout_gravity="center" android:visibility="gone"/>
+            </FrameLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/layout_bottom_navigation" />
+
+</LinearLayout>

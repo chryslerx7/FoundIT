@@ -1,0 +1,93 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomNavContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:background="@android:color/transparent">
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/navBarCard"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:elevation="0dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/surface">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageButton
+                android:id="@+id/navHome"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_nav_home"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/muted"
+                android:contentDescription="Home"/>
+
+            <ImageButton
+                android:id="@+id/navSearch"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_nav_search"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/muted"
+                android:contentDescription="Search"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/navReports"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_nav_reports"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/muted"
+                android:contentDescription="My Reports"/>
+
+            <ImageButton
+                android:id="@+id/navProfile"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:src="@drawable/ic_nav_profile"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/muted"
+                android:contentDescription="Profile"/>
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/navAdd"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_nav_add"
+        app:fabSize="normal"
+        app:backgroundTint="@color/blue"
+        app:tint="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@id/navBarCard"
+        app:layout_constraintTop_toTopOf="@id/navBarCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:elevation="20dp"
+        app:elevation="20dp"
+        android:translationZ="20dp"
+        app:pressedTranslationZ="12dp"
+        app:borderWidth="0dp"
+        android:stateListAnimator="@null"
+        android:contentDescription="Add Report"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

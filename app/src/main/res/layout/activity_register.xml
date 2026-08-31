@@ -1,0 +1,26 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:fillViewport="true" android:background="@color/background">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="24dp">
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Create Account" android:textSize="28sp" android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+        <EditText android:id="@+id/etName" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="Full name"/>
+        <EditText android:id="@+id/etStudentId" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="Student ID" android:layout_marginTop="10dp"/>
+        <EditText android:id="@+id/etEmail" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="School email" android:inputType="textEmailAddress" android:layout_marginTop="10dp"/>
+        <EditText android:id="@+id/etPassword" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="Password" android:inputType="textPassword" android:layout_marginTop="10dp"/>
+        <EditText android:id="@+id/etPasswordConfirm" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:hint="Confirm password" android:inputType="textPassword" android:layout_marginTop="10dp"/>
+        <Button android:id="@+id/btnRegister" android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="REGISTER" android:textColor="@android:color/white" android:background="@drawable/bg_blue_button"
+            android:layout_marginTop="22dp"/>
+        <ProgressBar android:id="@+id/progressRegister" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp" android:visibility="gone"/>
+    </LinearLayout>
+</ScrollView>

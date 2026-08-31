@@ -1,0 +1,87 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/background"
+    android:clipChildren="false" android:clipToPadding="false">
+
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="24dp">
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Edit Profile" android:textSize="26sp" android:textStyle="bold"
+                android:layout_gravity="center_horizontal" android:layout_marginTop="10dp"/>
+
+            <androidx.cardview.widget.CardView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:layout_width="100dp" android:layout_height="100dp"
+                app:cardCornerRadius="50dp" android:layout_gravity="center_horizontal"
+                android:layout_marginTop="24dp" app:cardElevation="2dp">
+                <ImageView android:id="@+id/ivEditProfileImg" android:layout_width="match_parent"
+                    android:layout_height="match_parent" android:scaleType="centerCrop"
+                    android:src="@android:drawable/ic_menu_gallery" android:contentDescription="Profile Photo"/>
+            </androidx.cardview.widget.CardView>
+
+            <TextView android:id="@+id/tvChangePhoto" android:layout_width="wrap_content"
+                android:layout_height="wrap_content" android:text="Change Photo"
+                android:textColor="@color/blue" android:layout_gravity="center_horizontal"
+                android:padding="8dp" android:textStyle="bold"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Full Name" android:layout_marginTop="20dp" android:textSize="12sp" android:textColor="@color/muted"/>
+            <EditText android:id="@+id/etEditName" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="Full Name" android:background="@drawable/bg_rounded" android:padding="12dp" android:layout_marginTop="4dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Student ID" android:layout_marginTop="12dp" android:textSize="12sp" android:textColor="@color/muted"/>
+            <EditText android:id="@+id/etEditStudentId" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="2024-12345" android:background="@drawable/bg_rounded" android:padding="12dp" android:layout_marginTop="4dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Email Address" android:layout_marginTop="12dp" android:textSize="12sp" android:textColor="@color/muted"/>
+            <EditText android:id="@+id/etEditEmail" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="Email Address" android:inputType="textEmailAddress"
+                android:background="@drawable/bg_rounded" android:padding="12dp" android:layout_marginTop="4dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Change Password (Optional)" android:layout_marginTop="24dp" android:textStyle="bold" android:textColor="@color/blue"/>
+
+            <EditText android:id="@+id/etEditPassword" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="New Password" android:inputType="textPassword"
+                android:background="@drawable/bg_rounded" android:padding="12dp" android:layout_marginTop="8dp"/>
+
+            <EditText android:id="@+id/etEditPasswordConfirm" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:hint="Confirm New Password" android:inputType="textPassword"
+                android:background="@drawable/bg_rounded" android:padding="12dp" android:layout_marginTop="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="32dp"
+                android:layout_marginBottom="20dp">
+                <Button
+                    android:id="@+id/btnCancelProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1"
+                    android:text="CANCEL"
+                    android:textColor="@color/muted"
+                    style="@style/Widget.Material3.Button.TextButton"/>
+                <Button
+                    android:id="@+id/btnUpdateProfile"
+                    android:layout_width="0dp"
+                    android:layout_height="56dp"
+                    android:layout_weight="1.5"
+                    android:text="SAVE CHANGES"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/bg_blue_button"
+                    android:layout_marginStart="8dp"/>
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/layout_bottom_navigation" />
+
+</LinearLayout>

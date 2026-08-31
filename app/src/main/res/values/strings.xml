@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">FoundIT</string>
+    <string name="profile_edit">Edit Profile</string>
+    <string name="profile_notifications">Notification Settings</string>
+    <string name="profile_help">Help and Support</string>
+    <string name="profile_about">About FoundIT</string>
+    <string name="profile_logout">Log Out</string>
+</resources>

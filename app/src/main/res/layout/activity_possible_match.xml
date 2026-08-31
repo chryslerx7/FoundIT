@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical" android:background="@color/background"
+    android:clipChildren="false" android:clipToPadding="false">
+
+    <ScrollView
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1" android:fillViewport="true">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="vertical" android:padding="16dp">
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="POSSIBLE MATCH" android:textSize="24sp" android:textStyle="bold"
+                android:textColor="@color/green" android:gravity="center" android:layout_marginBottom="20dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Your Report" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/muted"/>
+            <include android:id="@+id/layoutMyItem" layout="@layout/item_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>
+
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#DDD" android:layout_marginVertical="24dp"/>
+
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="Matching Report" android:textStyle="bold" android:textSize="16sp" android:textColor="@color/muted"/>
+            <include android:id="@+id/layoutOtherItem" layout="@layout/item_card" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp"/>
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="These items might be a match. Please verify with the other user."
+                android:gravity="center" android:layout_marginTop="32dp" android:textColor="@color/muted"/>
+
+            <Button android:id="@+id/btnMessageUser" android:layout_width="match_parent" android:layout_height="56dp"
+                android:text="MESSAGE USER" android:textColor="@android:color/white"
+                android:background="@drawable/bg_blue_button" android:layout_marginTop="16dp" android:layout_marginBottom="24dp"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/layout_bottom_navigation" />
+
+</LinearLayout>
