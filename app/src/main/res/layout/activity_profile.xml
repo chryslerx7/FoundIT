@@ -17,7 +17,8 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="120dp" android:layout_height="120dp"
                 app:cardCornerRadius="60dp" android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp" app:cardElevation="4dp">
+                android:layout_marginTop="30dp" app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/surface">
                 <ImageView android:id="@+id/ivProfileImg" android:layout_width="match_parent"
                     android:layout_height="match_parent" android:scaleType="centerCrop"
                     android:src="@android:drawable/ic_menu_gallery" android:contentDescription="Profile Image"/>
@@ -49,24 +50,29 @@
                         android:layout_height="wrap_content" android:text="0" android:textSize="20sp"
                         android:textStyle="bold" android:textColor="@color/blue"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Reports" android:textSize="14sp"/>
+                        android:text="Reports" android:textSize="14sp" android:textColor="@color/muted"/>
                 </LinearLayout>
-                <View android:layout_width="1dp" android:layout_height="40dp" android:background="#DDD"/>
+                <View android:layout_width="1dp" android:layout_height="40dp" android:background="@color/border"/>
                 <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
                     android:orientation="vertical" android:gravity="center" android:padding="16dp">
                     <TextView android:id="@+id/tvResolvedCount" android:layout_width="wrap_content"
                         android:layout_height="wrap_content" android:text="0" android:textSize="20sp"
                         android:textStyle="bold" android:textColor="@color/green"/>
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Resolved" android:textSize="14sp"/>
+                        android:text="Resolved" android:textSize="14sp" android:textColor="@color/muted"/>
                 </LinearLayout>
             </LinearLayout>
 
             <View android:layout_width="match_parent" android:layout_height="1dp"
-                android:background="#EEE" android:layout_marginTop="20dp"/>
+                android:background="@color/border" android:layout_marginTop="20dp"/>
 
             <Button android:id="@+id/btnEditProfile" android:layout_width="match_parent"
                 android:layout_height="56dp" android:text="@string/profile_edit"
+                android:gravity="start|center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
+                style="@style/Widget.Material3.Button.TextButton"/>
+
+            <Button android:id="@+id/btnTheme" android:layout_width="match_parent"
+                android:layout_height="56dp" android:text="@string/profile_theme"
                 android:gravity="start|center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
                 style="@style/Widget.Material3.Button.TextButton"/>
 

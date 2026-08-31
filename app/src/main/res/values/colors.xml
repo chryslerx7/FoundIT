@@ -5,7 +5,7 @@
     <color name="green">#2EAD67</color>
     <color name="red">#E34A4A</color>
     <color name="text">#000000</color>
-    <color name="muted">#000000</color>
+    <color name="muted">#666666</color>
     <color name="surface">#FFFFFF</color>
     <color name="background">#F5F7FA</color>
     <color name="border">#D9E0E7</color>

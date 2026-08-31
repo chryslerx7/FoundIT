@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">FoundIT</string>
     <string name="profile_edit">Edit Profile</string>
+    <string name="profile_theme">Appearance / Theme</string>
     <string name="profile_notifications">Notification Settings</string>
     <string name="profile_help">Help and Support</string>
     <string name="profile_about">About FoundIT</string>
     <string name="profile_logout">Log Out</string>
+    <string name="theme_dialog_title">Choose Theme</string>
+    <string name="theme_device_default">Device Default</string>
+    <string name="theme_light">Light Mode</string>
+    <string name="theme_dark">Dark Mode</string>
 </resources>

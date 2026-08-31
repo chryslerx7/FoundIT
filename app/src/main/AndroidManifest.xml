@@ -4,6 +4,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".FoundItApp"
         android:allowBackup="true"
         android:label="FoundIT"
         android:supportsRtl="true"

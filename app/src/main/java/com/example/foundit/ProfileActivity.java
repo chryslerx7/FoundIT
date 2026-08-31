@@ -6,6 +6,8 @@ import android.widget.*;
 import com.bumptech.glide.Glide;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.User;
+import com.example.foundit.util.ThemeManager;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import retrofit2.*;
 
 public class ProfileActivity extends BaseActivity {
@@ -29,6 +31,7 @@ public class ProfileActivity extends BaseActivity {
         setupBottomNavigation(R.id.navProfile);
 
         findViewById(R.id.btnEditProfile).setOnClickListener(v -> edit());
+        findViewById(R.id.btnTheme).setOnClickListener(v -> showThemeDialog());
         findViewById(R.id.btnMyMessages).setOnClickListener(v -> startActivity(new Intent(this, ConversationListActivity.class)));
         findViewById(R.id.btnLogout).setOnClickListener(v -> logout());
 
@@ -36,6 +39,26 @@ public class ProfileActivity extends BaseActivity {
         findViewById(R.id.btnNotifications).setOnClickListener(v -> toast("Notification settings coming soon."));
         findViewById(R.id.btnHelp).setOnClickListener(v -> toast("Support center coming soon."));
         findViewById(R.id.btnAbout).setOnClickListener(v -> toast("FoundIT v1.0"));
+    }
+
+    private void showThemeDialog() {
+        int currentMode = ThemeManager.getSavedThemeMode(this);
+        String[] options = {
+                getString(R.string.theme_device_default),
+                getString(R.string.theme_light),
+                getString(R.string.theme_dark)
+        };
+
+        new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.theme_dialog_title)
+                .setSingleChoiceItems(options, currentMode, (dialog, which) -> {
+                    dialog.dismiss();
+                    if (which != currentMode) {
+                        ThemeManager.setThemeMode(ProfileActivity.this, which);
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
 
     @Override protected void onResume() {
@@ -65,9 +88,14 @@ public class ProfileActivity extends BaseActivity {
                     reportsCount.setText(String.valueOf(currentUser.reports_count));
                     resolvedCount.setText(String.valueOf(currentUser.resolved_count));
 
-                    if (currentUser.profile_image_url != null) {
-                        Glide.with(ProfileActivity.this).load(currentUser.profile_image_url)
-                                .placeholder(android.R.drawable.ic_menu_gallery).into(profileImg);
+                    if (currentUser.profile_image_url != null && !currentUser.profile_image_url.isEmpty()) {
+                        Glide.with(ProfileActivity.this)
+                                .load(currentUser.profile_image_url)
+                                .placeholder(android.R.drawable.ic_menu_gallery)
+                                .error(android.R.drawable.ic_menu_gallery)
+                                .into(profileImg);
+                    } else {
+                        profileImg.setImageResource(android.R.drawable.ic_menu_gallery);
                     }
                 }
             }

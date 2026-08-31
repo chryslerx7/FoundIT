@@ -3,7 +3,8 @@
     android:orientation="vertical" android:padding="16dp" android:layout_marginBottom="8dp"
     android:background="@drawable/bg_rounded">
     <TextView android:id="@+id/tvConvUser" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:textStyle="bold" android:textSize="16sp"/>
+        android:layout_height="wrap_content" android:textStyle="bold" android:textSize="16sp"
+        android:textColor="@color/text"/>
     <TextView android:id="@+id/tvConvItem" android:layout_width="wrap_content"
         android:layout_height="wrap_content" android:textColor="@color/blue" android:textSize="14sp"/>
     <TextView android:id="@+id/tvConvLastMsg" android:layout_width="match_parent"

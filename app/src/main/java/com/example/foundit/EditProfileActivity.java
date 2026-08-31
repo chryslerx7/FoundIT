@@ -129,12 +129,18 @@ public class EditProfileActivity extends BaseActivity {
                 byte[] buf = new byte[8192]; int len;
                 while ((len = in.read(buf)) != -1) out.write(buf, 0, len);
                 in.close();
-                RequestBody body = RequestBody.create(out.toByteArray(), MediaType.parse(getContentResolver().getType(imageUri)));
-                part = MultipartBody.Part.createFormData("profile_image", getFileName(imageUri), body);
+                String mime = getContentResolver().getType(imageUri);
+                if (mime == null) mime = "image/jpeg";
+                RequestBody body = RequestBody.create(out.toByteArray(), MediaType.parse(mime));
+                String fileName = getFileName(imageUri);
+                part = MultipartBody.Part.createFormData("profile_image", fileName, body);
             } catch (Exception ex) {
                 toast("Could not read image."); return;
             }
         }
+
+        RequestBody passPart = p.isEmpty() ? null : text(p);
+        RequestBody passConfirmPart = p.isEmpty() ? null : text(pc);
 
         update.setEnabled(false);
         RetrofitClient.api().updateProfile(
@@ -143,8 +149,8 @@ public class EditProfileActivity extends BaseActivity {
                 text(n),
                 text(s),
                 text(e),
-                text(p),
-                text(pc),
+                passPart,
+                passConfirmPart,
                 part
         ).enqueue(new Callback<AuthResponse>() {
             @Override public void onResponse(Call<AuthResponse> c, Response<AuthResponse> r) {
@@ -153,7 +159,19 @@ public class EditProfileActivity extends BaseActivity {
                     toast("Profile updated.");
                     session.save(session.token(), r.body().user.name, r.body().user.id, r.body().user.role);
                     finish();
-                } else toast("Update failed.");
+                } else {
+                    String err = "Update failed.";
+                    if (r.errorBody() != null) {
+                        try {
+                            String errStr = r.errorBody().string();
+                            if (errStr.contains("message")) {
+                                org.json.JSONObject obj = new org.json.JSONObject(errStr);
+                                if (obj.has("message")) err = obj.getString("message");
+                            }
+                        } catch (Exception ignored) {}
+                    }
+                    toast(err);
+                }
             }
             @Override public void onFailure(Call<AuthResponse> c, Throwable t) {
                 update.setEnabled(true);

@@ -1,0 +1,12 @@
+<resources>
+    <color name="blue">#3B82F6</color>
+    <color name="blue_dark">#1D4ED8</color>
+    <color name="blue_light">#1E293B</color>
+    <color name="green">#2EAD67</color>
+    <color name="red">#E34A4A</color>
+    <color name="text">#F9FAFB</color>
+    <color name="muted">#9CA3AF</color>
+    <color name="surface">#1E293B</color>
+    <color name="background">#0F172A</color>
+    <color name="border">#334155</color>
+</resources>
