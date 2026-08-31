@@ -55,21 +55,25 @@ public class RegisterActivity extends BaseActivity {
                             startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                             finishAffinity();
                         } else {
-                            String msg = "Registration failed.";
-                            try (ResponseBody errorBody = r.errorBody()) {
-                                if (errorBody != null) {
-                                    String errorJson = errorBody.string();
-                                    if (errorJson.contains("\"message\"")) {
-                                        // Simple way to extract the "message" field value from JSON
-                                        int start = errorJson.indexOf("\"message\":\"") + 11;
-                                        int end = errorJson.indexOf("\"", start);
-                                        if (start > 10 && end > start) {
-                                            msg = errorJson.substring(start, end);
+                            if (r.code() >= 500) {
+                                toast("Server error. Please try again later.");
+                            } else {
+                                String msg = "Registration failed.";
+                                try (ResponseBody errorBody = r.errorBody()) {
+                                    if (errorBody != null) {
+                                        String errorJson = errorBody.string();
+                                        if (errorJson.contains("\"message\"")) {
+                                            // Simple way to extract the "message" field value from JSON
+                                            int start = errorJson.indexOf("\"message\":\"") + 11;
+                                            int end = errorJson.indexOf("\"", start);
+                                            if (start > 10 && end > start) {
+                                                msg = errorJson.substring(start, end);
+                                            }
                                         }
                                     }
-                                }
-                            } catch (Exception ignored) {}
-                            toast(msg);
+                                } catch (Exception ignored) {}
+                                toast(msg);
+                            }
                         }
                     }
                     @Override public void onFailure(Call<AuthResponse> c, Throwable t) {

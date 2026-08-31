@@ -30,6 +30,7 @@ public interface ApiService {
             @Part("email") RequestBody email,
             @Part("password") RequestBody password,
             @Part("password_confirmation") RequestBody passwordConfirmation,
+            @Part("delete_profile_image") RequestBody deleteImage,
             @Part MultipartBody.Part profileImage
     );
 

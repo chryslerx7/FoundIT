@@ -22,7 +22,8 @@ public class EditProfileActivity extends BaseActivity {
     ImageView profileImg;
     Button update, cancel;
     Uri imageUri;
-    String initialName, initialSid, initialEmail;
+    boolean shouldDeleteImage = false;
+    String initialName, initialSid, initialEmail, initialImageUrl;
 
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
@@ -43,17 +44,18 @@ public class EditProfileActivity extends BaseActivity {
         initialName = getIntent().getStringExtra("name");
         initialEmail = getIntent().getStringExtra("email");
         initialSid = getIntent().getStringExtra("student_id");
+        initialImageUrl = getIntent().getStringExtra("image_url");
 
         name.setText(initialName);
         email.setText(initialEmail);
         sid.setText(initialSid);
 
-        String currentImg = getIntent().getStringExtra("image_url");
-        if (currentImg != null) {
-            Glide.with(this).load(currentImg).into(profileImg);
+        if (initialImageUrl != null) {
+            Glide.with(this).load(initialImageUrl).into(profileImg);
         }
 
         findViewById(R.id.tvChangePhoto).setOnClickListener(v -> pickImage());
+        findViewById(R.id.tvRemovePhoto).setOnClickListener(v -> removePhoto());
         update.setOnClickListener(v -> update());
         cancel.setOnClickListener(v -> handleCancel());
 
@@ -69,7 +71,14 @@ public class EditProfileActivity extends BaseActivity {
                 !email.getText().toString().equals(initialEmail) ||
                 !sid.getText().toString().equals(initialSid) ||
                 !password.getText().toString().isEmpty() ||
-                imageUri != null;
+                imageUri != null ||
+                shouldDeleteImage;
+    }
+
+    private void removePhoto() {
+        imageUri = null;
+        shouldDeleteImage = true;
+        profileImg.setImageResource(android.R.drawable.ic_menu_gallery);
     }
 
     private void handleCancel() {
@@ -96,6 +105,7 @@ public class EditProfileActivity extends BaseActivity {
         super.onActivityResult(rc, res, d);
         if (rc == 200 && res == RESULT_OK && d != null && d.getData() != null) {
             imageUri = d.getData();
+            shouldDeleteImage = false;
             profileImg.setImageURI(imageUri);
         }
     }
@@ -139,8 +149,9 @@ public class EditProfileActivity extends BaseActivity {
             }
         }
 
-        RequestBody passPart = p.isEmpty() ? null : text(p);
-        RequestBody passConfirmPart = p.isEmpty() ? null : text(pc);
+        RequestBody passPart = p.isEmpty() ? text("") : text(p);
+        RequestBody passConfirmPart = p.isEmpty() ? text("") : text(pc);
+        RequestBody deletePart = text(shouldDeleteImage ? "1" : "0");
 
         update.setEnabled(false);
         RetrofitClient.api().updateProfile(
@@ -151,6 +162,7 @@ public class EditProfileActivity extends BaseActivity {
                 text(e),
                 passPart,
                 passConfirmPart,
+                deletePart,
                 part
         ).enqueue(new Callback<AuthResponse>() {
             @Override public void onResponse(Call<AuthResponse> c, Response<AuthResponse> r) {

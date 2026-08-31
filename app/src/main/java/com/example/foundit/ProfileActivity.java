@@ -97,6 +97,12 @@ public class ProfileActivity extends BaseActivity {
                     } else {
                         profileImg.setImageResource(android.R.drawable.ic_menu_gallery);
                     }
+                } else if (r.code() == 401) {
+                    session.clear();
+                    startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+                    finishAffinity();
+                } else {
+                    toast("Could not load profile (Error " + r.code() + ")");
                 }
             }
             @Override public void onFailure(Call<User> c, Throwable t) {

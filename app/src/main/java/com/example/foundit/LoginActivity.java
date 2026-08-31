@@ -49,7 +49,11 @@ public class LoginActivity extends BaseActivity {
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {
-                            toast("Login failed. Check your credentials.");
+                            if (r.code() == 401 || r.code() == 422) {
+                                toast("Login failed. Check your credentials.");
+                            } else {
+                                toast("Server error (" + r.code() + "). Please try again later.");
+                            }
                         }
                     }
                     @Override public void onFailure(Call<AuthResponse> c, Throwable t) {

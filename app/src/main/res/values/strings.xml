@@ -10,4 +10,6 @@
     <string name="theme_device_default">Device Default</string>
     <string name="theme_light">Light Mode</string>
     <string name="theme_dark">Dark Mode</string>
+    <string name="edit_profile_change_photo">Change Photo</string>
+    <string name="edit_profile_remove_photo">Remove Photo</string>
 </resources>

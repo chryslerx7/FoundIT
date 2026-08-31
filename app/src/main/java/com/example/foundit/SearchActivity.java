@@ -31,8 +31,14 @@ public class SearchActivity extends BaseActivity {
 
         setupBottomNavigation(R.id.navSearch);
 
+        AdapterView.OnItemSelectedListener listener = new AdapterView.OnItemSelectedListener() {
+            @Override public void onItemSelected(AdapterView<?> p, View v, int pos, long id) { load(); }
+            @Override public void onNothingSelected(AdapterView<?> p) {}
+        };
+        type.setOnItemSelectedListener(listener);
+        category.setOnItemSelectedListener(listener);
+
         findViewById(R.id.btnSearch).setOnClickListener(v->load());
-        load();
     }
 
     private void load() {
