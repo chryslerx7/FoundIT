@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">FoundIT</string>
+    <string name="splash_logo_description">FoundIT Logo</string>
+    <string name="splash_title">FoundIT</string>
     <string name="profile_edit">Edit Profile</string>
     <string name="profile_theme">Appearance / Theme</string>
     <string name="profile_notifications">Notification Settings</string>
@@ -12,4 +14,6 @@
     <string name="theme_dark">Dark Mode</string>
     <string name="edit_profile_change_photo">Change Photo</string>
     <string name="edit_profile_remove_photo">Remove Photo</string>
+
+    <string name="splash_tagline">Find what you\'ve lost.\nReturn what you\'ve found.</string>
 </resources>

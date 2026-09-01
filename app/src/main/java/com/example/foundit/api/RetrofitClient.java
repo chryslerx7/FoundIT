@@ -10,7 +10,7 @@ public class RetrofitClient {
     // public static final String BASE_URL = "http://10.0.2.2:8000/api/";
 
     // PHYSICAL PHONE (Use your PC's IPv4 address)
-    public static final String BASE_URL = "http://192.168.100.7:8000/api/";
+    public static final String BASE_URL = "https://foundit-api-production.up.railway.app/api/";
 
     private static Retrofit retrofit;
 

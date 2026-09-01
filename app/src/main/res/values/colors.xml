@@ -9,4 +9,10 @@
     <color name="surface">#FFFFFF</color>
     <color name="background">#F5F7FA</color>
     <color name="border">#D9E0E7</color>
+
+    <!-- FoundIT Branding -->
+    <color name="primary_blue">#2563EB</color>
+    <color name="splash_bg">#F8FAFC</color>
+    <color name="text_primary">#0F172A</color>
+    <color name="text_secondary">#64748B</color>
 </resources>

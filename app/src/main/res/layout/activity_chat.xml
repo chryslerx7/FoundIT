@@ -2,36 +2,89 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical" android:background="@color/background">
 
-    <LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:padding="8dp" android:background="@color/surface"
-        android:elevation="4dp" android:gravity="center_vertical">
-        <ImageView android:id="@+id/btnBack" android:layout_width="48dp" android:layout_height="48dp"
-            android:src="@drawable/abc_ic_ab_back_material" android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back" app:tint="@color/blue"
-            android:clickable="true" android:focusable="true" android:padding="12dp"/>
-        <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_weight="1" android:orientation="vertical" android:paddingStart="8dp">
-            <TextView android:id="@+id/tvChatWith" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:textStyle="bold" android:textSize="18sp"/>
-            <TextView android:id="@+id/tvChatMatch" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:textColor="@color/muted" android:textSize="12sp"/>
+    <LinearLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp"
+        android:background="@color/surface"
+        android:elevation="4dp"
+        android:gravity="center_vertical">
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/abc_ic_ab_back_material"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            app:tint="@color/blue"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
+            />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:paddingStart="8dp">
+
+            <TextView
+                android:id="@+id/tvChatWith"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                />
+
+            <TextView
+                android:id="@+id/tvChatMatch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/muted"
+                android:textSize="12sp"
+                />
+
         </LinearLayout>
+
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerMessages" android:layout_width="match_parent"
-        android:layout_height="0dp" android:layout_weight="1" android:padding="12dp"
-        android:clipToPadding="false"/>
+        android:id="@+id/recyclerMessages"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="12dp"
+        android:clipToPadding="false"
+        />
 
-    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="horizontal" android:padding="12dp" android:background="@color/surface">
-        <EditText android:id="@+id/etMessage" android:layout_width="0dp"
-            android:layout_height="wrap_content" android:layout_weight="1"
-            android:hint="Type a message..." android:background="@drawable/bg_rounded"
-            android:padding="12dp" android:maxLines="4"/>
-        <Button android:id="@+id/btnSend" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="SEND" android:layout_marginStart="8dp"/>
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:background="@color/surface">
+
+        <EditText
+            android:id="@+id/etMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Type a message..."
+            android:background="@drawable/bg_rounded"
+            android:padding="12dp"
+            android:maxLines="4"
+            />
+
+        <Button
+            android:id="@+id/btnSend"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SEND"
+            android:layout_marginStart="8dp"
+            />
+
     </LinearLayout>
 
 </LinearLayout>
