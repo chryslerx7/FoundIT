@@ -98,6 +98,7 @@ public class ItemDetailActivity extends BaseActivity {
         }
 
         boolean isOwner = x.user_id == session.userId();
+        match.setVisibility(isOwner ? View.VISIBLE : View.GONE);
         resolve.setVisibility(isOwner && "ACTIVE".equalsIgnoreCase(x.status) ? View.VISIBLE : View.GONE);
         edit.setVisibility(isOwner ? View.VISIBLE : View.GONE);
         delete.setVisibility(isOwner ? View.VISIBLE : View.GONE);
@@ -107,6 +108,10 @@ public class ItemDetailActivity extends BaseActivity {
         RetrofitClient.api().matches(session.authHeader(),itemId)
                 .enqueue(new Callback<ItemListResponse>() {
                     @Override public void onResponse(Call<ItemListResponse> c,Response<ItemListResponse> r) {
+                        if (r.code() == 403) {
+                            toast("Unauthorized: You can only view matches for your own reports.");
+                            return;
+                        }
                         if(!r.isSuccessful()||r.body()==null||r.body().items==null) {toast("No matches.");return;}
                         String[] names=new String[r.body().items.size()];
                         for(int i=0;i<names.length;i++) names[i]=r.body().items.get(i).item_name+" ("+r.body().items.get(i).type+")";

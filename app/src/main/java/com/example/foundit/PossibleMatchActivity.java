@@ -40,6 +40,11 @@ public class PossibleMatchActivity extends BaseActivity {
                 if (r.isSuccessful() && r.body() != null && r.body().item != null) {
                     if (isMy) {
                         myItem = r.body().item;
+                        if (myItem.user_id != session.userId()) {
+                            toast("Unauthorized access.");
+                            finish();
+                            return;
+                        }
                         bind(layoutMy, myItem);
                     } else {
                         otherItem = r.body().item;

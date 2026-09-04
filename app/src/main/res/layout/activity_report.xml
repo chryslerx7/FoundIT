@@ -1,33 +1,53 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootReportLayout"
     android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:background="@color/background"
-    android:clipChildren="false" android:clipToPadding="false">
+    android:background="@color/background">
 
-    <ScrollView
-        android:layout_width="match_parent" android:layout_height="0dp"
-        android:layout_weight="1" android:fillViewport="true">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="18dp"
-            android:paddingBottom="100dp">
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/reportScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:scrollbars="vertical"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="18dp"
+            android:paddingBottom="80dp">
+
             <TextView android:id="@+id/tvReportTitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Report Lost Item" android:textSize="26sp" android:textStyle="bold"/>
+
             <Button android:id="@+id/btnPhoto" android:layout_width="match_parent" android:layout_height="130dp"
                 android:text="Add a photo of the item" android:layout_marginTop="14dp"/>
+
             <ImageView android:id="@+id/imgPreview" android:layout_width="match_parent" android:layout_height="180dp"
                 android:visibility="gone" android:scaleType="centerCrop" android:contentDescription="Image Preview"/>
+
             <EditText android:id="@+id/etItemName" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:hint="Item name" android:layout_marginTop="12dp"/>
+
             <Spinner android:id="@+id/spCategory" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:entries="@array/category_array" android:layout_marginTop="10dp"/>
+
             <EditText android:id="@+id/etDescription" android:layout_width="match_parent" android:layout_height="100dp"
                 android:hint="Description" android:gravity="top" android:layout_marginTop="10dp"/>
+
             <EditText android:id="@+id/etLocation" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:hint="Location" android:layout_marginTop="10dp"/>
+
             <EditText android:id="@+id/etDate" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:hint="Date (YYYY-MM-DD)" android:inputType="date" android:layout_marginTop="10dp"/>
+
             <EditText android:id="@+id/etContact" android:layout_width="match_parent" android:layout_height="wrap_content"
                 android:hint="Contact information" android:layout_marginTop="10dp"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -53,8 +73,13 @@
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
-    <include layout="@layout/layout_bottom_navigation" />
+    <include
+        android:id="@+id/bottomNavContainer"
+        layout="@layout/layout_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

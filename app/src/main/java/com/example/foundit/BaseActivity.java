@@ -32,12 +32,18 @@ public class BaseActivity extends AppCompatActivity {
         if (root == null) return;
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+            
+            // Apply top padding for status bar
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             
-            // Handle bottom nav padding if it exists
+            // Handle bottom padding for navigation bar OR keyboard
             View bottomNav = findViewById(R.id.bottomNavContainer);
             if (bottomNav != null) {
-                bottomNav.setPadding(0, 0, 0, systemBars.bottom);
+                // If keyboard is visible, ime.bottom will be > 0. 
+                // We want to add that padding to ensure the form resizes and remains scrollable.
+                int bottomPadding = Math.max(systemBars.bottom, ime.bottom);
+                bottomNav.setPadding(0, 0, 0, bottomPadding);
             }
             
             return insets;
