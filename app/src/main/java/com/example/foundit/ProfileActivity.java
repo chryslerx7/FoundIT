@@ -19,6 +19,7 @@ public class ProfileActivity extends BaseActivity {
         super.onCreate(b);
         if(!requireLogin()) return;
         setContentView(R.layout.activity_profile);
+        applyWindowInsets(findViewById(R.id.rootProfileLayout));
 
         name = findViewById(R.id.tvProfileName);
         sid = findViewById(R.id.tvProfileStudentId);

@@ -17,6 +17,7 @@ public class RegisterActivity extends BaseActivity {
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.activity_register);
+        applyWindowInsets(findViewById(R.id.rootRegisterLayout));
 
         name = findViewById(R.id.etName);
         studentId = findViewById(R.id.etStudentId);

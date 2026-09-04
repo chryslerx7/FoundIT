@@ -21,6 +21,7 @@ public class MainActivity extends BaseActivity {
         super.onCreate(b);
         if (!requireLogin()) return;
         setContentView(R.layout.activity_main);
+        applyWindowInsets(findViewById(R.id.rootMainLayout));
 
         hello=findViewById(R.id.tvHello);
         lostCount=findViewById(R.id.tvLostCount);

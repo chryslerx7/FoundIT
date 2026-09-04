@@ -17,6 +17,7 @@ public class SearchActivity extends BaseActivity {
         super.onCreate(b);
         if(!requireLogin()) return;
         setContentView(R.layout.activity_search);
+        applyWindowInsets(findViewById(R.id.rootSearchLayout));
 
         search=findViewById(R.id.etSearch);
         type=findViewById(R.id.spType);

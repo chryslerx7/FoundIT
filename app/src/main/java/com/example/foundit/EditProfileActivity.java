@@ -29,6 +29,7 @@ public class EditProfileActivity extends BaseActivity {
         super.onCreate(b);
         if(!requireLogin()) return;
         setContentView(R.layout.activity_edit_profile);
+        applyWindowInsets(findViewById(R.id.rootEditProfileLayout));
 
         name = findViewById(R.id.etEditName);
         sid = findViewById(R.id.etEditStudentId);

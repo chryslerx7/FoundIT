@@ -17,6 +17,7 @@ public class LoginActivity extends BaseActivity {
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
         setContentView(R.layout.activity_login);
+        applyWindowInsets(findViewById(R.id.rootLoginLayout));
 
         email = findViewById(R.id.etEmail);
         password = findViewById(R.id.etPassword);

@@ -8,6 +8,10 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import android.os.Bundle;
 import com.example.foundit.util.SessionManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -21,6 +25,23 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         session = new SessionManager(this);
         setupDoubleTap();
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+    }
+
+    protected void applyWindowInsets(View root) {
+        if (root == null) return;
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
+            
+            // Handle bottom nav padding if it exists
+            View bottomNav = findViewById(R.id.bottomNavContainer);
+            if (bottomNav != null) {
+                bottomNav.setPadding(0, 0, 0, systemBars.bottom);
+            }
+            
+            return insets;
+        });
     }
 
     protected void setupBottomNavigation(int activeId) {

@@ -32,6 +32,7 @@ public class ReportActivity extends BaseActivity {
         super.onCreate(b);
         if(!requireLogin()) return;
         setContentView(R.layout.activity_report);
+        applyWindowInsets(findViewById(R.id.rootReportLayout));
 
         type=getIntent().getStringExtra("type");
         if(type==null) type="LOST";
@@ -167,7 +168,10 @@ public class ReportActivity extends BaseActivity {
                 if(r.isSuccessful()) {
                     toast(editItemId != -1 ? "Report updated." : "Report submitted.");
                     finish();
-                } else toast("Operation failed.");
+                } else {
+                    if (r.code() == 403) toast("Unauthorized: You do not own this report.");
+                    else toast("Operation failed.");
+                }
             }
             @Override public void onFailure(Call<ItemResponse> c, Throwable t) {
                 submit.setEnabled(true);

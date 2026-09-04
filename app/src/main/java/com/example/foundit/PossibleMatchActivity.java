@@ -19,6 +19,7 @@ public class PossibleMatchActivity extends BaseActivity {
         super.onCreate(b);
         if (!requireLogin()) return;
         setContentView(R.layout.activity_possible_match);
+        applyWindowInsets(findViewById(R.id.rootMatchLayout));
 
         layoutMy = findViewById(R.id.layoutMyItem);
         layoutOther = findViewById(R.id.layoutOtherItem);

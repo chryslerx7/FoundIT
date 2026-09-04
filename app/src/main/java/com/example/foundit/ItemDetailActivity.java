@@ -17,11 +17,13 @@ public class ItemDetailActivity extends BaseActivity {
     TextView name, type, category, location, date, description, reporter, status;
     ImageView image;
     Button match, resolve, edit, delete;
+    View layoutContent, layoutLoading, layoutError;
 
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
         if(!requireLogin()) return;
         setContentView(R.layout.activity_item_detail);
+        applyWindowInsets(findViewById(R.id.rootDetailLayout));
         itemId=getIntent().getIntExtra("item_id",-1);
 
         image=findViewById(R.id.imgDetail); name=findViewById(R.id.tvDetailName);
@@ -31,6 +33,10 @@ public class ItemDetailActivity extends BaseActivity {
         status=findViewById(R.id.tvDetailStatus);
         match=findViewById(R.id.btnMatch); resolve=findViewById(R.id.btnResolve);
         edit=findViewById(R.id.btnEdit); delete=findViewById(R.id.btnDelete);
+        
+        layoutContent = findViewById(R.id.layoutContent);
+        layoutLoading = findViewById(R.id.layoutLoading);
+        layoutError = findViewById(R.id.layoutError);
 
         setupBottomNavigation(-1);
 
@@ -38,18 +44,38 @@ public class ItemDetailActivity extends BaseActivity {
         resolve.setOnClickListener(v->resolve());
         edit.setOnClickListener(v->edit());
         delete.setOnClickListener(v->delete());
+        findViewById(R.id.btnRetry).setOnClickListener(v -> load());
 
         load();
     }
 
     private void load() {
+        layoutLoading.setVisibility(View.VISIBLE);
+        layoutContent.setVisibility(View.INVISIBLE);
+        layoutError.setVisibility(View.GONE);
+        
+        // Reset visibility of owner buttons to prevent stale state flicker
+        resolve.setVisibility(View.GONE);
+        edit.setVisibility(View.GONE);
+        delete.setVisibility(View.GONE);
+
         RetrofitClient.api().getItem(session.authHeader(),itemId)
                 .enqueue(new Callback<ItemResponse>() {
                     @Override public void onResponse(Call<ItemResponse> c,Response<ItemResponse> r) {
-                        if(r.isSuccessful()&&r.body()!=null&&r.body().item!=null) bind(r.body().item);
-                        else toast("Item not found.");
+                        layoutLoading.setVisibility(View.GONE);
+                        if(r.isSuccessful()&&r.body()!=null&&r.body().item!=null) {
+                            bind(r.body().item);
+                            layoutContent.setVisibility(View.VISIBLE);
+                        } else {
+                            layoutError.setVisibility(View.VISIBLE);
+                            toast("Item not found.");
+                        }
                     }
-                    @Override public void onFailure(Call<ItemResponse> c,Throwable t){toast("Connection failed.");}
+                    @Override public void onFailure(Call<ItemResponse> c,Throwable t) {
+                        layoutLoading.setVisibility(View.GONE);
+                        layoutError.setVisibility(View.VISIBLE);
+                        toast("Connection failed.");
+                    }
                 });
     }
 
@@ -108,7 +134,10 @@ public class ItemDetailActivity extends BaseActivity {
                                     if (r.isSuccessful()) {
                                         toast("Report marked as resolved.");
                                         load();
-                                    } else toast("Could not resolve.");
+                                    } else {
+                                        if (r.code() == 403) toast("Unauthorized: You do not own this report.");
+                                        else toast("Could not resolve.");
+                                    }
                                 }
                                 @Override public void onFailure(Call<ApiMessage> c, Throwable t) {
                                     toast("Connection failed.");
@@ -128,7 +157,10 @@ public class ItemDetailActivity extends BaseActivity {
                                     if (r.isSuccessful()) {
                                         toast("Report deleted.");
                                         finish();
-                                    } else toast("Could not delete.");
+                                    } else {
+                                        if (r.code() == 403) toast("Unauthorized: You do not own this report.");
+                                        else toast("Could not delete.");
+                                    }
                                 }
                                 @Override public void onFailure(Call<ApiMessage> c, Throwable t) {
                                     toast("Connection failed.");

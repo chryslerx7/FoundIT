@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootReportLayout"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical" android:background="@color/background"
     android:clipChildren="false" android:clipToPadding="false">
@@ -7,7 +8,8 @@
         android:layout_width="match_parent" android:layout_height="0dp"
         android:layout_weight="1" android:fillViewport="true">
         <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="18dp">
+            android:orientation="vertical" android:padding="18dp"
+            android:paddingBottom="100dp">
             <TextView android:id="@+id/tvReportTitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:text="Report Lost Item" android:textSize="26sp" android:textStyle="bold"/>
             <Button android:id="@+id/btnPhoto" android:layout_width="match_parent" android:layout_height="130dp"

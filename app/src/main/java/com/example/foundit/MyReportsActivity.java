@@ -13,6 +13,7 @@ public class MyReportsActivity extends BaseActivity {
         super.onCreate(b);
         if(!requireLogin()) return;
         setContentView(R.layout.activity_my_reports);
+        applyWindowInsets(findViewById(R.id.rootMyReportsLayout));
         adapter=new ItemAdapter(this,item->openItem(item.id));
         RecyclerView rv=findViewById(R.id.recyclerMyReports);
         rv.setLayoutManager(new LinearLayoutManager(this));

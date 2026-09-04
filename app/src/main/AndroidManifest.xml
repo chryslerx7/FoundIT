@@ -26,15 +26,15 @@
         <activity android:name=".ConversationListActivity" />
         <activity android:name=".ChatActivity" />
         <activity android:name=".PossibleMatchActivity" />
-        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".EditProfileActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".NotificationActivity" />
         <activity android:name=".ProfileActivity" />
         <activity android:name=".MyReportsActivity" />
         <activity android:name=".ItemDetailActivity" />
-        <activity android:name=".ReportActivity" />
+        <activity android:name=".ReportActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".SearchActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".RegisterActivity" android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".LoginActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".MainActivity" />
     </application>
 </manifest>
