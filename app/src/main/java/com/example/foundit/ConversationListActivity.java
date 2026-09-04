@@ -20,6 +20,7 @@ public class ConversationListActivity extends BaseActivity {
         super.onCreate(b);
         if (!requireLogin()) return;
         setContentView(R.layout.activity_conversation_list);
+        applyWindowInsets(findViewById(R.id.rootConversationListLayout));
 
         recycler = findViewById(R.id.recyclerConversations);
         adapter = new ConversationAdapter(list, session.userId(), c -> {

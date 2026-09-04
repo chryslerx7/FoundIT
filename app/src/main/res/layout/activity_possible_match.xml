@@ -30,7 +30,12 @@
 
             <Button android:id="@+id/btnMessageUser" android:layout_width="match_parent" android:layout_height="56dp"
                 android:text="MESSAGE USER" android:textColor="@android:color/white"
-                android:background="@drawable/bg_blue_button" android:layout_marginTop="16dp" android:layout_marginBottom="24dp"/>
+                android:background="@drawable/bg_blue_button" android:layout_marginTop="16dp"/>
+
+            <Button android:id="@+id/btnNotMatched" android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="NOT MATCHED" android:textColor="@color/muted"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_marginTop="8dp" android:layout_marginBottom="24dp"/>
         </LinearLayout>
     </ScrollView>
 

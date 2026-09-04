@@ -4,6 +4,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.view.View;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.foundit.adapter.MessageAdapter;
@@ -31,6 +35,7 @@ public class ChatActivity extends BaseActivity {
         super.onCreate(b);
         if (!requireLogin()) return;
         setContentView(R.layout.activity_chat);
+        applyChatWindowInsets(findViewById(R.id.rootChatLayout));
 
         conversationId = getIntent().getIntExtra("conversation_id", -1);
         String otherUser = getIntent().getStringExtra("other_user_name");
@@ -89,6 +94,30 @@ public class ChatActivity extends BaseActivity {
                 } else toast("Failed to send.");
             }
             @Override public void onFailure(Call<MessageResponse> c, Throwable t) { toast("Connection failed."); }
+        });
+    }
+
+    private void applyChatWindowInsets(View root) {
+        if (root == null) return;
+        ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
+
+            // Apply top padding to header specifically
+            View header = findViewById(R.id.chatHeader);
+            if (header != null) {
+                header.setPadding(header.getPaddingLeft(), systemBars.top, header.getPaddingRight(), header.getPaddingBottom());
+            }
+
+            // Handle bottom padding for message input (keyboard or nav bar)
+            View bottomContainer = findViewById(R.id.bottomChatContainer);
+            if (bottomContainer != null) {
+                int bottomPadding = Math.max(systemBars.bottom, ime.bottom);
+                bottomContainer.setPadding(bottomContainer.getPaddingLeft(), bottomContainer.getPaddingTop(), 
+                    bottomContainer.getPaddingRight(), bottomPadding > 0 ? bottomPadding : 12);
+            }
+
+            return insets;
         });
     }
 }

@@ -31,7 +31,15 @@ public class PossibleMatchActivity extends BaseActivity {
         loadItem(otherId, false);
 
         findViewById(R.id.btnMessageUser).setOnClickListener(v -> startChat());
+        findViewById(R.id.btnNotMatched).setOnClickListener(v -> returnToHome());
         setupBottomNavigation(-1);
+    }
+
+    private void returnToHome() {
+        Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        finish();
     }
 
     private void loadItem(int id, boolean isMy) {

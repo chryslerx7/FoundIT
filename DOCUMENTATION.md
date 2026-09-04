@@ -114,5 +114,26 @@ Images are stored in `storage/app/public/`.
 
 ---
 
+## 7. Changelog
+
+### [v1.0.0] - 2026-09-04
+- Initial release with core Lost and Found management features.
+- Android application with Java + Retrofit architecture.
+- Laravel backend with MySQL and Sanctum authentication.
+
+### [v1.0.1] - 2026-09-04
+#### Fixed
+- **System UI Overlap:** Implemented full Edge-to-Edge support across all Android screens, ensuring headers and navigation bars do not overlap with the Android status bar and navigation area.
+- **Report Form Scrolling:** Fixed measurement issues in Lost and Found report forms; added `windowSoftInputMode="adjustResize"` and `NestedScrollView` to ensure all fields are reachable when the keyboard is visible.
+- **Item Details Flicker:** Resolved owner-action button flicker by implementing a loading state and hiding sensitive actions until ownership is positively confirmed.
+- **Possible Match Access:** Restricted match results to report owners only. Added backend authorization and UI guards to prevent unrelated users from viewing or messaging through matches they don't own.
+
+#### Improved
+- **Possible Match Algorithm:** Refactored matching logic to use a weighted scoring model (Name, Category, Location, and Date proximity) instead of broad OR queries, significantly increasing match accuracy.
+- **UI UX:** Added "Not Matched" button to the Possible Match screen for easier navigation back to the Home screen.
+- **Backend Security:** Enforced strict ownership checks for match retrieval and unauthorized API requests.
+
+---
+
 > [!TIP]
 > **Proactive Debugging:** Always check `logcat` in Android Studio and `storage/logs/laravel.log` on the server if issues arise.

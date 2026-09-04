@@ -14,6 +14,7 @@ public class NotificationActivity extends BaseActivity {
         super.onCreate(b);
         if(!requireLogin()) return;
         setContentView(R.layout.activity_notification);
+        applyWindowInsets(findViewById(R.id.rootNotificationLayout));
         RecyclerView rv=findViewById(R.id.recyclerNotifications);
         rv.setLayoutManager(new LinearLayoutManager(this));
 
