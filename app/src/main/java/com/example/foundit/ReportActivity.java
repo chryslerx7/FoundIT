@@ -23,7 +23,7 @@ public class ReportActivity extends BaseActivity {
     Spinner category;
     ImageView preview;
     Button photo, submit, cancel;
-    Uri imageUri;
+    Uri imageUri, photoUri;
     String type;
     int editItemId = -1;
     String initName, initDesc, initLoc, initDate, initContact, initCat;
@@ -49,6 +49,15 @@ public class ReportActivity extends BaseActivity {
         photo=findViewById(R.id.btnPhoto);
         submit=findViewById(R.id.btnSubmit);
         cancel=findViewById(R.id.btnCancelReport);
+
+        date.setFocusable(false);
+        date.setClickable(true);
+        date.setOnClickListener(v -> showDatePicker());
+
+        if (getIntent().getIntExtra("edit_item_id", -1) == -1) {
+            java.util.Calendar cal = java.util.Calendar.getInstance();
+            updateDateLabel(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH));
+        }
 
         setupBottomNavigation(-1);
 
@@ -112,6 +121,24 @@ public class ReportActivity extends BaseActivity {
         }
     }
 
+    private void showDatePicker() {
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        if (editItemId != -1 || !date.getText().toString().isEmpty()) {
+            try {
+                String[] parts = date.getText().toString().split("-");
+                if (parts.length == 3) {
+                    cal.set(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]) - 1, Integer.parseInt(parts[2]));
+                }
+            } catch (Exception ignored) {}
+        }
+        new android.app.DatePickerDialog(this, (view, year, month, day) -> updateDateLabel(year, month, day),
+                cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH)).show();
+    }
+
+    private void updateDateLabel(int year, int month, int day) {
+        date.setText(String.format(java.util.Locale.US, "%d-%02d-%02d", year, month + 1, day));
+    }
+
     private void setSpinnerSelection(Spinner s, String value) {
         for (int i = 0; i < s.getCount(); i++) {
             if (s.getItemAtPosition(i).toString().equalsIgnoreCase(value)) {
@@ -121,18 +148,53 @@ public class ReportActivity extends BaseActivity {
     }
 
     private void pickImage() {
-        Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        i.setType("image/*");
-        i.addCategory(Intent.CATEGORY_OPENABLE);
-        startActivityForResult(i,100);
+        String[] options = {"Take Photo", "Choose from Gallery"};
+        new android.app.AlertDialog.Builder(this)
+                .setTitle("Add Photo")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) openCamera();
+                    else openGallery();
+                }).show();
     }
 
-    @Override protected void onActivityResult(int requestCode,int resultCode,Intent data) {
-        super.onActivityResult(requestCode,resultCode,data);
-        if(requestCode==100&&resultCode==RESULT_OK&&data!=null&&data.getData()!=null) {
-            imageUri=data.getData();
-            preview.setVisibility(View.VISIBLE);
-            preview.setImageURI(imageUri);
+    private void openGallery() {
+        Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        i.setType("image/*");
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        startActivityForResult(i, 100);
+    }
+
+    private void openCamera() {
+        Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        if (i.resolveActivity(getPackageManager()) != null) {
+            try {
+                File dir = getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES);
+                File f = File.createTempFile("IMG_", ".jpg", dir);
+                photoUri = androidx.core.content.FileProvider.getUriForFile(this, "com.example.foundit.fileprovider", f);
+            } catch (IOException e) {
+                toast("Could not create image file.");
+            }
+            if (photoUri != null) {
+                i.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, photoUri);
+                startActivityForResult(i, 101);
+            }
+        } else {
+            toast("Camera app not found.");
+        }
+    }
+
+    @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            if (requestCode == 100 && data != null && data.getData() != null) {
+                imageUri = data.getData();
+            } else if (requestCode == 101) {
+                imageUri = photoUri;
+            }
+            if (imageUri != null) {
+                preview.setVisibility(View.VISIBLE);
+                preview.setImageURI(imageUri);
+            }
         }
     }
 

@@ -103,18 +103,18 @@ public class ChatActivity extends BaseActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
 
-            // Apply top padding to header specifically
             View header = findViewById(R.id.chatHeader);
             if (header != null) {
                 header.setPadding(header.getPaddingLeft(), systemBars.top, header.getPaddingRight(), header.getPaddingBottom());
             }
 
-            // Handle bottom padding for message input (keyboard or nav bar)
             View bottomContainer = findViewById(R.id.bottomChatContainer);
             if (bottomContainer != null) {
                 int bottomPadding = Math.max(systemBars.bottom, ime.bottom);
-                bottomContainer.setPadding(bottomContainer.getPaddingLeft(), bottomContainer.getPaddingTop(), 
-                    bottomContainer.getPaddingRight(), bottomPadding > 0 ? bottomPadding : 12);
+                // Keep the original 12dp padding (converted to pixels) and add the inset
+                int density = (int) getResources().getDisplayMetrics().density;
+                int basePadding = 12 * density;
+                bottomContainer.setPadding(basePadding, basePadding, basePadding, bottomPadding > 0 ? bottomPadding : basePadding);
             }
 
             return insets;
