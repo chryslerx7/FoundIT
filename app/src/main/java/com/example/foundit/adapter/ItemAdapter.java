@@ -37,11 +37,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Holder> {
     @Override public void onBindViewHolder(@NonNull Holder h, int position) {
         Item item = items.get(position);
         h.name.setText(item.item_name);
-        h.location.setText(item.location == null ? "" : item.location);
-        h.date.setText(item.date == null ? "" : item.date);
+        h.category.setText(item.category == null ? "" : item.category);
+        h.location.setText(item.location == null ? "" : "📍 " + item.location);
+        h.date.setText(item.date == null ? "" : "📅 " + item.date);
         h.type.setText(item.type == null ? "" : item.type);
 
-        int bg = "FOUND".equalsIgnoreCase(item.type) ? Color.rgb(46,173,103) : Color.rgb(227,74,74);
+        int bg = "FOUND".equalsIgnoreCase(item.type) ? Color.parseColor("#16A34A") : Color.parseColor("#DC2626");
         h.type.setBackgroundColor(bg);
 
         if (item.image_url != null && !item.image_url.isEmpty()) {
@@ -57,11 +58,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Holder> {
 
     static class Holder extends RecyclerView.ViewHolder {
         ImageView image;
-        TextView name, type, location, date;
+        TextView name, category, type, location, date;
         Holder(View v) {
             super(v);
             image = v.findViewById(R.id.imgItem);
             name = v.findViewById(R.id.tvItemName);
+            category = v.findViewById(R.id.tvCategory);
             type = v.findViewById(R.id.tvType);
             location = v.findViewById(R.id.tvLocation);
             date = v.findViewById(R.id.tvDate);

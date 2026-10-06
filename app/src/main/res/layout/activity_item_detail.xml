@@ -1,8 +1,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootDetailLayout"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/foundit_background">
 
     <FrameLayout
         android:id="@+id/frameContent"
@@ -13,58 +14,254 @@
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/layoutContent"
-            android:layout_width="match_parent" android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:fillViewport="true"
             android:visibility="invisible"
             android:scrollbars="vertical"
             android:clipToPadding="false">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="vertical" android:padding="16dp" android:paddingBottom="80dp">
-                <ImageView android:id="@+id/imgDetail" android:layout_width="match_parent" android:layout_height="250dp"
-                    android:scaleType="centerCrop" android:src="@android:drawable/ic_menu_gallery" android:contentDescription="Item Image"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:paddingBottom="90dp">
+
+                <!-- Hero Image Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="260dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="@color/foundit_surface_elevated"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:id="@+id/imgDetail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@android:drawable/ic_menu_gallery"
+                        android:contentDescription="Item hero image"/>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Thumbnails Gallery -->
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerDetailThumbnails"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp"
                     android:visibility="gone"
                     android:orientation="horizontal"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:orientation="horizontal" android:layout_marginTop="10dp">
-                    <TextView android:id="@+id/tvDetailType" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:textColor="@android:color/white" android:padding="6dp"/>
-                    <TextView android:id="@+id/tvDetailStatus" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:textColor="@android:color/white" android:padding="6dp" android:layout_marginStart="8dp"
-                        android:visibility="gone" android:text="RESOLVED" android:background="@color/muted"
-                        android:textStyle="bold"/>
+                <!-- Status & Type Badges -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/tvDetailType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"
+                        android:background="@drawable/bg_rounded"/>
+
+                    <TextView
+                        android:id="@+id/tvDetailStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"
+                        android:background="@drawable/bg_rounded"
+                        android:layout_marginStart="8dp"
+                        android:visibility="gone"
+                        android:text="RESOLVED"/>
                 </LinearLayout>
-                <TextView android:id="@+id/tvDetailName" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textSize="25sp" android:textStyle="bold" android:layout_marginTop="8dp"
-                    android:textColor="@color/text"/>
-                <TextView android:id="@+id/tvDetailCategory" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textColor="@color/text"/>
-                <TextView android:id="@+id/tvDetailLocation" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textColor="@color/text"/>
-                <TextView android:id="@+id/tvDetailDate" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:textColor="@color/text"/>
-                <TextView android:id="@+id/tvDetailDescription" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" android:textColor="@color/text"/>
-                <TextView android:id="@+id/tvDetailReporter" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp" android:textColor="@color/text"/>
-                <Button android:id="@+id/btnMatch" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="VIEW POSSIBLE MATCHES" android:layout_marginTop="18dp"/>
-                <Button android:id="@+id/btnResolve" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="MARK AS RESOLVED" android:visibility="gone"/>
-                <Button android:id="@+id/btnEdit" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="EDIT REPORT" android:visibility="gone"/>
-                <Button android:id="@+id/btnDelete" android:layout_width="match_parent" android:layout_height="wrap_content"
-                    android:text="DELETE REPORT" android:visibility="gone"/>
+
+                <!-- Item Name & Category Card -->
+                <TextView
+                    android:id="@+id/tvDetailName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/foundit_text_primary"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:id="@+id/tvDetailCategory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textStyle="normal"
+                    android:textColor="@color/foundit_primary"
+                    android:layout_marginBottom="16dp"/>
+
+                <!-- Metadata Card (Location & Date) -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tvDetailLocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="@color/foundit_text_primary"
+                            android:layout_marginBottom="8dp"/>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/foundit_border"
+                            android:layout_marginBottom="8dp"/>
+
+                        <TextView
+                            android:id="@+id/tvDetailDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textColor="@color/foundit_text_primary"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Description Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Description"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/foundit_text_secondary"
+                            android:layout_marginBottom="6dp"/>
+
+                        <TextView
+                            android:id="@+id/tvDetailDescription"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="15sp"
+                            android:textColor="@color/foundit_text_primary"
+                            android:lineSpacingExtra="4dp"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Reporter Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="14dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="24dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:id="@+id/tvDetailReporter"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/foundit_text_primary"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Action Buttons -->
+                <Button
+                    android:id="@+id/btnMatch"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="VIEW POSSIBLE MATCHES"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/bg_blue_button"
+                    android:layout_marginBottom="10dp"
+                    android:stateListAnimator="@null"
+                    app:elevation="0dp"/>
+
+                <Button
+                    android:id="@+id/btnResolve"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="MARK AS RESOLVED"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/foundit_found"
+                    android:backgroundTint="@color/foundit_surface"
+                    android:visibility="gone"
+                    android:layout_marginBottom="10dp"
+                    app:elevation="0dp"/>
+
+                <Button
+                    android:id="@+id/btnEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="EDIT REPORT"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/foundit_primary"
+                    android:backgroundTint="@color/foundit_surface"
+                    android:visibility="gone"
+                    android:layout_marginBottom="10dp"
+                    app:elevation="0dp"/>
+
+                <Button
+                    android:id="@+id/btnDelete"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:text="DELETE REPORT"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/foundit_lost"
+                    android:backgroundTint="@color/foundit_surface"
+                    android:visibility="gone"
+                    app:elevation="0dp"/>
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
+        <!-- Loading State -->
         <LinearLayout
             android:id="@+id/layoutLoading"
             android:layout_width="wrap_content"
@@ -75,15 +272,16 @@
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:indeterminateTint="@color/blue"/>
+                android:indeterminateTint="@color/foundit_primary"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Loading item details..."
                 android:layout_marginTop="8dp"
-                android:textColor="@color/muted"/>
+                android:textColor="@color/foundit_text_secondary"/>
         </LinearLayout>
 
+        <!-- Error State -->
         <LinearLayout
             android:id="@+id/layoutError"
             android:layout_width="wrap_content"
@@ -96,7 +294,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Unable to load item details."
-                android:textColor="@color/red"/>
+                android:textColor="@color/foundit_lost"
+                android:textStyle="bold"/>
             <Button
                 android:id="@+id/btnRetry"
                 android:layout_width="wrap_content"

@@ -2,8 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
-    app:cardCornerRadius="12dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="14dp"
     app:cardElevation="2dp"
     app:cardBackgroundColor="@color/foundit_surface">
 
@@ -15,10 +15,11 @@
         android:gravity="center_vertical">
 
         <androidx.cardview.widget.CardView
-            android:layout_width="76dp"
-            android:layout_height="76dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="0dp">
+            android:layout_width="92dp"
+            android:layout_height="92dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="@color/foundit_surface_elevated">
 
             <ImageView
                 android:id="@+id/imgItem"
@@ -39,7 +40,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:layout_marginBottom="4dp">
 
                 <TextView
                     android:id="@+id/tvItemName"
@@ -57,11 +59,21 @@
                     android:layout_height="wrap_content"
                     android:textSize="11sp"
                     android:textStyle="bold"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="3dp"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
                     android:background="@drawable/bg_rounded"
                     android:textColor="@android:color/white"/>
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvCategory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:textColor="@color/foundit_primary"
+                android:textStyle="normal"
+                android:singleLine="true"
+                android:layout_marginBottom="2dp"/>
 
             <TextView
                 android:id="@+id/tvLocation"
@@ -69,8 +81,8 @@
                 android:layout_height="wrap_content"
                 android:textSize="13sp"
                 android:textColor="@color/foundit_text_secondary"
-                android:layout_marginTop="4dp"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:layout_marginBottom="2dp"/>
 
             <TextView
                 android:id="@+id/tvDate"
@@ -78,7 +90,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:textColor="@color/foundit_text_muted"
-                android:layout_marginTop="2dp"
                 android:singleLine="true"/>
         </LinearLayout>
 
