@@ -1,12 +1,32 @@
 <resources>
-    <color name="blue">#3B82F6</color>
-    <color name="blue_dark">#1D4ED8</color>
+    <!-- FoundIT Semantic Design System - Dark Theme -->
+    <color name="foundit_background">#0F172A</color>
+    <color name="foundit_surface">#1E293B</color>
+    <color name="foundit_surface_elevated">#263449</color>
+    <color name="foundit_primary">#60A5FA</color>
+    <color name="foundit_primary_pressed">#3B82F6</color>
+    <color name="foundit_primary_light">#1E293B</color>
+    <color name="foundit_text_primary">#F8FAFC</color>
+    <color name="foundit_text_secondary">#CBD5E1</color>
+    <color name="foundit_text_muted">#94A3B8</color>
+    <color name="foundit_border">#334155</color>
+    <color name="foundit_lost">#F87171</color>
+    <color name="foundit_found">#4ADE80</color>
+    <color name="foundit_warning">#FBBF24</color>
+
+    <!-- Legacy Compatibility Mappings -->
+    <color name="blue">#60A5FA</color>
+    <color name="blue_dark">#3B82F6</color>
     <color name="blue_light">#1E293B</color>
-    <color name="green">#2EAD67</color>
-    <color name="red">#E34A4A</color>
-    <color name="text">#F9FAFB</color>
-    <color name="muted">#9CA3AF</color>
+    <color name="green">#4ADE80</color>
+    <color name="red">#F87171</color>
+    <color name="text">#F8FAFC</color>
+    <color name="muted">#94A3B8</color>
     <color name="surface">#1E293B</color>
     <color name="background">#0F172A</color>
     <color name="border">#334155</color>
+    <color name="primary_blue">#60A5FA</color>
+    <color name="splash_bg">#0F172A</color>
+    <color name="text_primary">#F8FAFC</color>
+    <color name="text_secondary">#CBD5E1</color>
 </resources>

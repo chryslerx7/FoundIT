@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         android:elevation="0dp"
         app:cardElevation="8dp"
-        app:cardBackgroundColor="@color/surface">
+        app:cardBackgroundColor="@color/foundit_surface">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -29,7 +29,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_nav_home"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/muted"
+                app:tint="@color/foundit_text_muted"
                 android:contentDescription="Home"/>
 
             <ImageButton
@@ -39,7 +39,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_nav_search"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/muted"
+                app:tint="@color/foundit_text_muted"
                 android:contentDescription="Search"/>
 
             <View
@@ -54,7 +54,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_nav_reports"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/muted"
+                app:tint="@color/foundit_text_muted"
                 android:contentDescription="My Reports"/>
 
             <ImageButton
@@ -64,7 +64,7 @@
                 android:layout_weight="1"
                 android:src="@drawable/ic_nav_profile"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                app:tint="@color/muted"
+                app:tint="@color/foundit_text_muted"
                 android:contentDescription="Profile"/>
 
         </LinearLayout>
@@ -76,7 +76,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_nav_add"
         app:fabSize="normal"
-        app:backgroundTint="@color/blue"
+        app:backgroundTint="@color/foundit_primary"
         app:tint="@android:color/white"
         app:layout_constraintBottom_toTopOf="@id/navBarCard"
         app:layout_constraintTop_toTopOf="@id/navBarCard"

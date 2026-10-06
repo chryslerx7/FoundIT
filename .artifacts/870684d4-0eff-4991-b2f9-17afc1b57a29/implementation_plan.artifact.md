@@ -1,81 +1,51 @@
-# Implementation Plan - FoundIT Phase 3 (v1.0.3)
+# Implementation Plan - FoundIT Phase 4A-1 (Global Design System & Authentication Redesign)
 
-Implement Phase 3 of the FoundIT Lost & Found application across both the Laravel backend (`foundit-api`) and the Android client (`FoundIt`), adding Search by Date, Multiple Photos (up to 5), Item Details thumbnails, Loading/Empty/Error states, Search Stale Request Protection, and Off-UI thread Image Compression/Resizing.
+Implement Phase 4A-1 of the FoundIT Lost & Found application, establishing the global FoundIT design system with light and dark theme semantic colors, redesigning the Login and Register screens, and upgrading authentication loading and error states while preserving all existing logic, session management, and navigation.
 
 ## User Review Required
 
-- **Additive Database Migration**: Adding `item_images` table with foreign key and cascade deletion. Existing items and their `image` field remain fully intact and compatible.
-- **Max 5 Photos**: Enforced both on Android UI and Laravel backend validation.
-- **Backward Compatibility**: Reports without `item_images` will fall back to `image_url` seamlessly.
+- **Semantic Color Architecture**: Establishing semantic color tokens (`foundit_background`, `foundit_surface`, `foundit_primary`, `foundit_text_primary`, etc.) across `res/values/colors.xml` and `res/values-night/colors.xml`.
+- **UI-Only Auth Redesign**: Redesigning `LoginActivity` and `RegisterActivity` UI layouts with Material 3 TextInputLayouts and polished styling without altering backend calls, session management, or authentication logic.
 
 ## Proposed Changes
 
-### Backend (`foundit-api`)
+### Global Design System
 
-#### [NEW] [create_item_images_table.php](file:///C:/xampp/htdocs/Laravel%20Projects/foundit-api/database/migrations/2026_10_06_000001_create_item_images_table.php)
-- Add additive migration for `item_images` (`id`, `item_id`, `path`, `position`, timestamps).
+#### [MODIFY] [colors.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/values/colors.xml)
+- Define comprehensive Light theme semantic colors (`foundit_background`, `foundit_surface`, `foundit_surface_elevated`, `foundit_primary`, `foundit_primary_pressed`, `foundit_primary_light`, `foundit_text_primary`, `foundit_text_secondary`, `foundit_text_muted`, `foundit_border`, `foundit_lost`, `foundit_found`, `foundit_warning`).
 
-#### [NEW] [ItemImage.php](file:///C:/xampp/htdocs/Laravel%20Projects/foundit-api/app/Models/ItemImage.php)
-- Eloquent model for item images with `image_url` accessor and relationship to `Item`.
+#### [MODIFY] [colors.xml (night)](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/values-night/colors.xml)
+- Define comprehensive Dark theme semantic colors matching the design spec (Dark slate background `#0F172A`, surface `#1E293B`, primary `#60A5FA`, etc.).
 
-#### [MODIFY] [Item.php](file:///C:/xampp/htdocs/Laravel%20Projects/foundit-api/app/Models/Item.php)
-- Add `images()` relationship and include `images` in appends / eager loading when appropriate.
-
-#### [MODIFY] [ItemController.php](file:///C:/xampp/htdocs/Laravel%20Projects/foundit-api/app/Http/Controllers/Api/ItemController.php)
-- Support `date=YYYY-MM-DD` query parameter in `index()`.
-- Support `images[]` upload (up to 5) in `store()` and `update()`, while preserving fallback to single `image`. Set `image` to the first image for v1.0.2 compatibility.
-- Ensure proper cleanup of `item_images` and files on update/delete. Eager load `images` in `index`, `show`, `myReports`, `store`, `update`.
+#### [MODIFY] [themes.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/values/themes.xml) & [themes.xml (night)](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/values-night/themes.xml)
+- Update Material 3 DayNight themes to map primary colors, status bar, and navigation bar colors correctly.
 
 ---
 
-### Android (`FoundIt`)
+### Authentication Redesign
 
-#### [NEW] [ItemImage.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/model/ItemImage.java)
-- Model representing an item image (`id`, `item_id`, `path`, `image_url`, `position`).
+#### [MODIFY] [activity_login.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_login.xml)
+- Redesign login layout using Material 3 `TextInputLayout`, `TextInputEditText`, polished spacing, typography hierarchy, primary blue button, and progress indicator.
 
-#### [NEW] [ItemImageAdapter.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/adapter/ItemImageAdapter.java)
-- RecyclerView adapter for displaying image thumbnails in `ReportActivity` and `ItemDetailActivity`.
+#### [MODIFY] [LoginActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/LoginActivity.java)
+- Ensure loading state disables button/inputs, prevents duplicate submissions, and handles errors cleanly.
 
-#### [NEW] [item_thumbnail.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/item_thumbnail.xml)
-- Layout for individual image thumbnails.
+#### [MODIFY] [activity_register.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_register.xml)
+- Redesign register layout with scrollable container, Material 3 inputs for Full Name, Student ID, School Email, Password, and Confirm Password with password toggle.
 
-#### [MODIFY] [Item.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/model/Item.java)
-- Add `public List<ItemImage> images;`.
+#### [MODIFY] [RegisterActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/RegisterActivity.java)
+- Ensure robust validation, loading state handling, and inline/toast error presentation.
 
-#### [MODIFY] [ApiService.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/api/ApiService.java)
-- Update `getItems` with `@Query("date") String date`.
-- Update `createItem` and `updateItem` to accept `List<MultipartBody.Part> images` (alongside single image for compatibility).
-
-#### [MODIFY] [activity_search.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_search.xml)
-- Add Date filter UI elements (date selection view/button, clear date button).
-
-#### [MODIFY] [SearchActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/SearchActivity.java)
-- Implement DatePicker, clear date, proper loading/empty/error states, and Stale Request Protection (request sequence number / call cancellation).
-
-#### [MODIFY] [activity_report.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_report.xml)
-- Add horizontal RecyclerView for thumbnails, photo counter (e.g., `0/5`), and add photo button.
-
-#### [MODIFY] [ReportActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/ReportActivity.java)
-- Implement multi-photo selection (up to 5), camera/gallery appending, remove photo logic, counter display, and off-UI thread image compression/resizing.
-
-#### [MODIFY] [activity_item_detail.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_item_detail.xml)
-- Add thumbnail RecyclerView below the main image.
-
-#### [MODIFY] [ItemDetailActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/ItemDetailActivity.java)
-- Implement thumbnail selection for main image, fallback to `image_url` if `images` is empty, robust loading/content/error states.
-
-#### [MODIFY] [MainActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/MainActivity.java) & [MyReportsActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/MyReportsActivity.java)
-- Ensure robust Loading, Empty, Error, and Content states without flashing stale data.
+#### [MODIFY] [layout_bottom_navigation.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/layout_bottom_navigation.xml)
+- Update background and tint colors to use semantic tokens (`foundit_surface`, `foundit_muted`, etc.).
 
 ## Verification Plan
 
 ### Automated Tests
-- Laravel backend: Run phpunit / artisan migrate / model unit checks.
-- Android: Gradle build (`app:assembleDebug`).
+- Build Android project (`app:assembleDebug`) to verify all XML resources, styles, and Java compilation.
 
 ### Manual Verification
-- Verify Search by date, date picker, clear date.
-- Verify multi-photo upload (1 to 5 images), rejecting 6th image.
-- Verify removal of photos and updates.
-- Verify Item Details thumbnail switching and fallback.
-- Verify loading states, empty states, error states, and stale search protection.
+- Verify Login UI in Light and Dark modes.
+- Verify Register UI in Light and Dark modes.
+- Verify validation, loading state (duplicate submission prevention), password toggle.
+- Verify theme switching (Light, Dark, System Default).

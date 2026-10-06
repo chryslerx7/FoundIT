@@ -38,13 +38,11 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
-        login.setEnabled(false);
-        progress.setVisibility(View.VISIBLE);
+        setLoading(true);
         RetrofitClient.api().login(new LoginRequest(e, p, "FoundIT Android"))
                 .enqueue(new Callback<AuthResponse>() {
                     @Override public void onResponse(Call<AuthResponse> c, Response<AuthResponse> r) {
-                        login.setEnabled(true);
-                        progress.setVisibility(View.GONE);
+                        setLoading(false);
                         if (r.isSuccessful() && r.body() != null && r.body().token != null) {
                             session.save(r.body().token, r.body().user.name, r.body().user.id, r.body().user.role);
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
@@ -58,10 +56,18 @@ public class LoginActivity extends BaseActivity {
                         }
                     }
                     @Override public void onFailure(Call<AuthResponse> c, Throwable t) {
-                        login.setEnabled(true);
-                        progress.setVisibility(View.GONE);
+                        setLoading(false);
                         toast("Connection failed: " + t.getMessage());
                     }
                 });
+    }
+
+    private void setLoading(boolean loading) {
+        login.setEnabled(!loading);
+        email.setEnabled(!loading);
+        password.setEnabled(!loading);
+        register.setEnabled(!loading);
+        progress.setVisibility(loading ? View.VISIBLE : View.GONE);
+        login.setText(loading ? "LOGGING IN..." : "LOG IN");
     }
 }

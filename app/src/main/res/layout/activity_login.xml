@@ -1,50 +1,112 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootLoginLayout"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:fillViewport="true" android:background="@color/background">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/foundit_background">
+
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:orientation="vertical" android:padding="28dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="28dp"
+        android:gravity="center_horizontal">
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="FoundIT" android:textSize="32sp" android:textStyle="bold"
-            android:textColor="@color/blue" android:layout_gravity="center_horizontal"
-            android:layout_marginTop="40dp"/>
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Find it. Report it. Return it." android:textSize="15sp"
-            android:textColor="@color/muted" android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="40dp"/>
+        <ImageView
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:src="@mipmap/ic_launcher"
+            android:layout_marginTop="36dp"
+            android:contentDescription="FoundIT Logo"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FoundIT"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@color/foundit_primary"
+            android:layout_marginTop="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Find it. Report it. Return it."
+            android:textSize="15sp"
+            android:textColor="@color/foundit_text_secondary"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="36dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:hint="Email">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="School Email"
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEmail" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"/>
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:hint="Password" android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:layout_marginTop="16dp"
             app:endIconMode="password_toggle"
-            xmlns:app="http://schemas.android.com/apk/res-auto">
+            app:boxBackgroundMode="outline"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp">
+
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPassword" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:inputType="textPassword"/>
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:singleLine="true"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button android:id="@+id/btnLogin" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:text="LOGIN"
-            android:textColor="@android:color/white" android:background="@drawable/bg_blue_button"
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="LOG IN"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:background="@drawable/bg_blue_button"
+            android:layout_marginTop="24dp"
+            android:stateListAnimator="@null"
+            app:elevation="0dp"/>
+
+        <ProgressBar
+            android:id="@+id/progressLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:indeterminateTint="@color/foundit_primary"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/tvRegister"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Don't have an account? Register"
+            android:textColor="@color/foundit_primary"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:padding="12dp"
             android:layout_marginTop="24dp"/>
 
-        <ProgressBar android:id="@+id/progressLogin" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp" android:visibility="gone"/>
-
-        <TextView android:id="@+id/tvRegister" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="Don't have an account? Register"
-            android:textColor="@color/blue" android:textStyle="bold"
-            android:layout_gravity="center_horizontal" android:layout_marginTop="22dp"/>
     </LinearLayout>
 </ScrollView>

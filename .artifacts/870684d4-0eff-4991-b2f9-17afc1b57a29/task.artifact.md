@@ -1,13 +1,9 @@
-# Tasks - FoundIT Phase 3
+# Tasks - FoundIT Phase 4A-1
 
-- [x] Backend: Create additive migration for `item_images`
-- [x] Backend: Create `ItemImage` model and update `Item` model
-- [x] Backend: Update `ItemController` for multi-photo support (up to 5), legacy fallback, and `date` search filter
-- [x] Android: Create `ItemImage` model and update `Item` model
-- [x] Android: Update `ApiService.java` for multi-image multipart and date query parameter
-- [x] Android: Create `ItemImageAdapter` and thumbnail layout
-- [x] Android: Implement off-UI thread image compression/resizing and multi-photo management in `ReportActivity`
-- [x] Android: Implement Date filter, Clear Date, and Stale Request Protection in `SearchActivity`
-- [x] Android: Implement thumbnail gallery and main image switcher in `ItemDetailActivity`
-- [x] Android: Enhance Loading, Empty, Error, and Content states across `MainActivity`, `SearchActivity`, `ItemDetailActivity`, and `MyReportsActivity`
-- [x] Verification: Run backend migration/tests and build Android app (`app:assembleDebug`)
+- [x] Global Design System: Update Light and Dark semantic color definitions in `colors.xml` (`values` and `values-night`) and theme styles in `themes.xml`
+- [x] Authentication: Redesign `activity_login.xml` with Material 3 TextInputLayouts and polished layout
+- [x] Authentication: Update `LoginActivity.java` loading and error states
+- [x] Authentication: Redesign `activity_register.xml` with Material 3 TextInputLayouts and polished layout
+- [x] Authentication: Update `RegisterActivity.java` validation and loading states
+- [x] Shared Components: Update `layout_bottom_navigation.xml` with semantic color tokens
+- [x] Verification: Build Android app (`app:assembleDebug`) and verify Light/Dark/System themes and Auth flows

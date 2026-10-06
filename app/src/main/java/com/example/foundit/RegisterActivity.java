@@ -31,9 +31,11 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void doRegister() {
-        String n=name.getText().toString().trim(), sid=studentId.getText().toString().trim();
-        String e=email.getText().toString().trim(), p=password.getText().toString();
-        String pc=confirm.getText().toString();
+        String n = name.getText().toString().trim();
+        String sid = studentId.getText().toString().trim();
+        String e = email.getText().toString().trim();
+        String p = password.getText().toString();
+        String pc = confirm.getText().toString();
 
         if (n.isEmpty() || sid.isEmpty() || e.isEmpty() || p.isEmpty()) {
             toast("Complete all fields.");
@@ -44,13 +46,11 @@ public class RegisterActivity extends BaseActivity {
             return;
         }
 
-        register.setEnabled(false);
-        progress.setVisibility(View.VISIBLE);
-        RetrofitClient.api().register(new RegisterRequest(n,sid,e,p,pc))
+        setLoading(true);
+        RetrofitClient.api().register(new RegisterRequest(n, sid, e, p, pc))
                 .enqueue(new Callback<AuthResponse>() {
                     @Override public void onResponse(Call<AuthResponse> c, Response<AuthResponse> r) {
-                        register.setEnabled(true);
-                        progress.setVisibility(View.GONE);
+                        setLoading(false);
                         if (r.isSuccessful() && r.body() != null && r.body().token != null) {
                             session.save(r.body().token, r.body().user.name, r.body().user.id, r.body().user.role);
                             startActivity(new Intent(RegisterActivity.this, MainActivity.class));
@@ -64,7 +64,6 @@ public class RegisterActivity extends BaseActivity {
                                     if (errorBody != null) {
                                         String errorJson = errorBody.string();
                                         if (errorJson.contains("\"message\"")) {
-                                            // Simple way to extract the "message" field value from JSON
                                             int start = errorJson.indexOf("\"message\":\"") + 11;
                                             int end = errorJson.indexOf("\"", start);
                                             if (start > 10 && end > start) {
@@ -78,10 +77,20 @@ public class RegisterActivity extends BaseActivity {
                         }
                     }
                     @Override public void onFailure(Call<AuthResponse> c, Throwable t) {
-                        register.setEnabled(true);
-                        progress.setVisibility(View.GONE);
+                        setLoading(false);
                         toast("Connection failed: " + t.getMessage());
                     }
                 });
+    }
+
+    private void setLoading(boolean loading) {
+        register.setEnabled(!loading);
+        name.setEnabled(!loading);
+        studentId.setEnabled(!loading);
+        email.setEnabled(!loading);
+        password.setEnabled(!loading);
+        confirm.setEnabled(!loading);
+        progress.setVisibility(loading ? View.VISIBLE : View.GONE);
+        register.setText(loading ? "CREATING ACCOUNT..." : "REGISTER");
     }
 }
