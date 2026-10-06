@@ -21,6 +21,10 @@ public class Conversation {
     public Integer userTwoId;
     @SerializedName("direct_item")
     public Item directItem;
+    @SerializedName("user_one")
+    public User userOne;
+    @SerializedName("user_two")
+    public User userTwo;
     public List<Message> messages;
     @SerializedName("created_at")
     public String createdAt;

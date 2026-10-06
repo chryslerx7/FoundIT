@@ -12,13 +12,22 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
     List<Conversation> list;
     int myId;
     OnItemClick click;
+    OnConversationLongClickListener longClickListener;
 
     public interface OnItemClick { void onClick(Conversation c); }
+
+    public interface OnConversationLongClickListener {
+        void onConversationLongClick(Conversation c, int position);
+    }
 
     public ConversationAdapter(List<Conversation> list, int myId, OnItemClick click) {
         this.list = list;
         this.myId = myId;
         this.click = click;
+    }
+
+    public void setOnConversationLongClickListener(OnConversationLongClickListener listener) {
+        this.longClickListener = listener;
     }
 
     @NonNull @Override public H onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -31,8 +40,16 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         String otherUser;
         String itemName;
         if (c.directItem != null) {
-            otherUser = (c.directItem.user != null && c.directItem.user.name != null)
-                    ? c.directItem.user.name : "Reporter";
+            com.example.foundit.model.User other = null;
+            if (c.userOne != null && c.userTwo != null) {
+                other = (c.userOne.id == myId) ? c.userTwo : c.userOne;
+            }
+            if (other != null && other.name != null) {
+                otherUser = other.name;
+            } else {
+                otherUser = (c.directItem.user != null && c.directItem.user.name != null)
+                        ? c.directItem.user.name : "Reporter";
+            }
             itemName = c.directItem.item_name != null ? c.directItem.item_name : "";
         } else {
             boolean isOwnerOfLost = c.lostItem != null && c.lostItem.user_id == myId;
@@ -49,6 +66,14 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
         } else holder.last.setText("No messages yet.");
 
         holder.itemView.setOnClickListener(v -> click.onClick(c));
+        if (longClickListener != null) {
+            holder.itemView.setOnLongClickListener(v -> {
+                longClickListener.onConversationLongClick(c, holder.getBindingAdapterPosition());
+                return true;
+            });
+        } else {
+            holder.itemView.setOnLongClickListener(null);
+        }
     }
 
     @Override public int getItemCount() { return list.size(); }

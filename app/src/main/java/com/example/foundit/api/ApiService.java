@@ -164,4 +164,7 @@ public interface ApiService {
 
     @DELETE("messages/{id}")
     Call<ApiMessage> deleteMessage(@Header("Authorization") String auth, @Path("id") int id);
+
+    @DELETE("conversations/{id}")
+    Call<ApiMessage> deleteConversation(@Header("Authorization") String auth, @Path("id") int id);
 }

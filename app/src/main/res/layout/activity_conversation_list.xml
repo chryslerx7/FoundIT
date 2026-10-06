@@ -47,6 +47,20 @@
             android:paddingVertical="8dp"
             android:clipToPadding="false"/>
 
+        <TextView
+            android:id="@+id/tvEmptyConversations"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No conversations yet.\nStart a conversation with another student about a Lost or Found item."
+            android:textSize="14sp"
+            android:gravity="center"
+            android:lineSpacingExtra="4dp"
+            android:textColor="@color/foundit_text_secondary"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="48dp"
+            android:paddingHorizontal="32dp"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
     <include
