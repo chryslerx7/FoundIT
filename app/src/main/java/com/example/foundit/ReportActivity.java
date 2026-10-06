@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foundit.adapter.ItemImageAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -165,11 +166,11 @@ public class ReportActivity extends BaseActivity {
 
     private void handleCancel() {
         if (hasChanges()) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Discard Changes?")
-                    .setMessage("You have unsaved changes. Are you sure you want to cancel?")
-                    .setPositiveButton("Discard", (d, w) -> finish())
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Cancel Report?")
+                    .setMessage("Your changes will be lost if you leave this screen.")
                     .setNegativeButton("Keep Editing", null)
+                    .setPositiveButton("Cancel", (d, w) -> finish())
                     .show();
         } else {
             finish();
