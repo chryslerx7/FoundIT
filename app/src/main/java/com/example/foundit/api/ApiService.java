@@ -42,6 +42,15 @@ public interface ApiService {
             @Query("category") String category
     );
 
+    @GET("items")
+    Call<ItemListResponse> getItems(
+            @Header("Authorization") String auth,
+            @Query("search") String search,
+            @Query("type") String type,
+            @Query("category") String category,
+            @Query("date") String date
+    );
+
     @GET("items/{id}")
     Call<ItemResponse> getItem(@Header("Authorization") String auth, @Path("id") int id);
 
@@ -56,7 +65,39 @@ public interface ApiService {
             @Part("date") RequestBody date,
             @Part("type") RequestBody type,
             @Part("contact") RequestBody contact,
+            @Part MultipartBody.Part image,
+            @Part List<MultipartBody.Part> images
+    );
+
+    @Multipart
+    @POST("items")
+    Call<ItemResponse> createItem(
+            @Header("Authorization") String auth,
+            @Part("item_name") RequestBody itemName,
+            @Part("category") RequestBody category,
+            @Part("description") RequestBody description,
+            @Part("location") RequestBody location,
+            @Part("date") RequestBody date,
+            @Part("type") RequestBody type,
+            @Part("contact") RequestBody contact,
             @Part MultipartBody.Part image
+    );
+
+    @Multipart
+    @POST("items/{id}")
+    Call<ItemResponse> updateItem(
+            @Header("Authorization") String auth,
+            @Path("id") int id,
+            @Part("_method") RequestBody method,
+            @Part("item_name") RequestBody itemName,
+            @Part("category") RequestBody category,
+            @Part("description") RequestBody description,
+            @Part("location") RequestBody location,
+            @Part("date") RequestBody date,
+            @Part("type") RequestBody type,
+            @Part("contact") RequestBody contact,
+            @Part MultipartBody.Part image,
+            @Part List<MultipartBody.Part> images
     );
 
     @Multipart

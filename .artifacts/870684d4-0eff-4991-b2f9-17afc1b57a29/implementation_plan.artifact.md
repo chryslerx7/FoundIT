@@ -1,47 +1,81 @@
-# Implementation Plan - Android Application Icon Fix
+# Implementation Plan - FoundIT Phase 3 (v1.0.3)
 
-This plan details the steps to correctly update the FoundIT application icon using the new source file `new-cion.png`, ensuring all legacy and adaptive icon resources are synchronized.
+Implement Phase 3 of the FoundIT Lost & Found application across both the Laravel backend (`foundit-api`) and the Android client (`FoundIt`), adding Search by Date, Multiple Photos (up to 5), Item Details thumbnails, Loading/Empty/Error states, Search Stale Request Protection, and Off-UI thread Image Compression/Resizing.
 
 ## User Review Required
 
-> [!IMPORTANT]
-> - **Icon Source**: `new-cion.png` will be used as the definitive source for all launcher icon resources.
-> - **Density Scaling**: Since I cannot perform high-quality image resizing, I will use the `new-cion.png` content for all density folders. This ensures the correct design is visible on all devices, though it may result in larger resource sizes than optimized icons.
-> - **Adaptive Icon**: The existing FoundIT blue background (`#2563EB`) will be preserved.
+- **Additive Database Migration**: Adding `item_images` table with foreign key and cascade deletion. Existing items and their `image` field remain fully intact and compatible.
+- **Max 5 Photos**: Enforced both on Android UI and Laravel backend validation.
+- **Backward Compatibility**: Reports without `item_images` will fall back to `image_url` seamlessly.
 
 ## Proposed Changes
 
-### 1. Launcher Icon Resources (Mipmaps)
+### Backend (`foundit-api`)
 
-#### [MODIFY] [res/mipmap-*](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png)
-- Replace all instances of `ic_launcher.png`, `ic_launcher_round.png`, and `ic_launcher_foreground.png` in all density folders (`mdpi`, `hdpi`, `xhdpi`, `xxhdpi`, `xxxhdpi`) with the content of `new-cion.png`.
-- Remove any remaining `ic_launcher.webp` or `ic_launcher_round.webp` files to prevent conflicts.
+#### [NEW] [create_item_images_table.php](file:///C:/xampp/htdocs/Laravel%20Projects/foundit-api/database/migrations/2026_10_06_000001_create_item_images_table.php)
+- Add additive migration for `item_images` (`id`, `item_id`, `path`, `position`, timestamps).
 
-### 2. Adaptive Icon Configuration
+#### [NEW] [ItemImage.php](file:///C:/xampp/htdocs/Laravel%20Projects/foundit-api/app/Models/ItemImage.php)
+- Eloquent model for item images with `image_url` accessor and relationship to `Item`.
 
-#### [MODIFY] [ic_launcher.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml)
-#### [MODIFY] [ic_launcher_round.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml)
-- Ensure they point to `@mipmap/ic_launcher_foreground`.
+#### [MODIFY] [Item.php](file:///C:/xampp/htdocs/Laravel%20Projects/foundit-api/app/Models/Item.php)
+- Add `images()` relationship and include `images` in appends / eager loading when appropriate.
 
-### 3. Splash Screen & Branding
+#### [MODIFY] [ItemController.php](file:///C:/xampp/htdocs/Laravel%20Projects/foundit-api/app/Http/Controllers/Api/ItemController.php)
+- Support `date=YYYY-MM-DD` query parameter in `index()`.
+- Support `images[]` upload (up to 5) in `store()` and `update()`, while preserving fallback to single `image`. Set `image` to the first image for v1.0.2 compatibility.
+- Ensure proper cleanup of `item_images` and files on update/delete. Eager load `images` in `index`, `show`, `myReports`, `store`, `update`.
 
-#### [MODIFY] [ic_launcher_playstore.png](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/drawable/ic_launcher_playstore.png)
-- Update this drawable resource to match `new-cion.png`, as it is used in the `activity_splash.xml`.
+---
 
-### 4. Manifest & Themes
+### Android (`FoundIt`)
 
-#### [VERIFY] [AndroidManifest.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/AndroidManifest.xml)
-- Confirm `android:icon` and `android:roundIcon` point to `@mipmap/ic_launcher` and `@mipmap/ic_launcher_round`.
+#### [NEW] [ItemImage.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/model/ItemImage.java)
+- Model representing an item image (`id`, `item_id`, `path`, `image_url`, `position`).
 
-#### [VERIFY] [themes.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/values/themes.xml)
-- Confirm `windowSplashScreenAnimatedIcon` points to `@mipmap/ic_launcher`.
+#### [NEW] [ItemImageAdapter.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/adapter/ItemImageAdapter.java)
+- RecyclerView adapter for displaying image thumbnails in `ReportActivity` and `ItemDetailActivity`.
+
+#### [NEW] [item_thumbnail.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/item_thumbnail.xml)
+- Layout for individual image thumbnails.
+
+#### [MODIFY] [Item.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/model/Item.java)
+- Add `public List<ItemImage> images;`.
+
+#### [MODIFY] [ApiService.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/api/ApiService.java)
+- Update `getItems` with `@Query("date") String date`.
+- Update `createItem` and `updateItem` to accept `List<MultipartBody.Part> images` (alongside single image for compatibility).
+
+#### [MODIFY] [activity_search.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_search.xml)
+- Add Date filter UI elements (date selection view/button, clear date button).
+
+#### [MODIFY] [SearchActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/SearchActivity.java)
+- Implement DatePicker, clear date, proper loading/empty/error states, and Stale Request Protection (request sequence number / call cancellation).
+
+#### [MODIFY] [activity_report.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_report.xml)
+- Add horizontal RecyclerView for thumbnails, photo counter (e.g., `0/5`), and add photo button.
+
+#### [MODIFY] [ReportActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/ReportActivity.java)
+- Implement multi-photo selection (up to 5), camera/gallery appending, remove photo logic, counter display, and off-UI thread image compression/resizing.
+
+#### [MODIFY] [activity_item_detail.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_item_detail.xml)
+- Add thumbnail RecyclerView below the main image.
+
+#### [MODIFY] [ItemDetailActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/ItemDetailActivity.java)
+- Implement thumbnail selection for main image, fallback to `image_url` if `images` is empty, robust loading/content/error states.
+
+#### [MODIFY] [MainActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/MainActivity.java) & [MyReportsActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/MyReportsActivity.java)
+- Ensure robust Loading, Empty, Error, and Content states without flashing stale data.
 
 ## Verification Plan
 
 ### Automated Tests
-- `gradle_build` (assembleDebug) to verify resource linking.
+- Laravel backend: Run phpunit / artisan migrate / model unit checks.
+- Android: Gradle build (`app:assembleDebug`).
 
 ### Manual Verification
-1. **Launcher Icon**: Deploy the app and verify the icon on the home screen and app drawer.
-2. **Splash Screen**: Launch the app and verify the logo displayed during splash matches `new-cion.png`.
-3. **App Info**: Check the icon in the system "App Info" settings page.
+- Verify Search by date, date picker, clear date.
+- Verify multi-photo upload (1 to 5 images), rejecting 6th image.
+- Verify removal of photos and updates.
+- Verify Item Details thumbnail switching and fallback.
+- Verify loading states, empty states, error states, and stale search protection.

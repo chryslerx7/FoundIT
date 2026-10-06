@@ -1,5 +1,7 @@
 package com.example.foundit.model;
 
+import java.util.List;
+
 public class Item {
     public int id;
     public int user_id;
@@ -12,6 +14,7 @@ public class Item {
     public String status;
     public String contact;
     public String image_url;
+    public List<ItemImage> images;
     public User user;
     public String created_at;
 }

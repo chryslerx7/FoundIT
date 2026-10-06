@@ -1,13 +1,27 @@
 package com.example.foundit;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.*;
 import androidx.activity.OnBackPressedCallback;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
 import android.provider.OpenableColumns;
 import android.database.Cursor;
 import android.view.View;
 import android.widget.*;
+
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import com.example.foundit.adapter.ItemImageAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
 import okhttp3.MediaType;
@@ -17,13 +31,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Executors;
 
 public class ReportActivity extends BaseActivity {
     EditText name, desc, location, date, contact;
     Spinner category;
-    ImageView preview;
-    Button photo, submit, cancel;
-    Uri imageUri, photoUri;
+    Button photoBtn, submit, cancel;
+    TextView tvPhotoCount;
+    RecyclerView recyclerPhotos;
+    ItemImageAdapter imageAdapter;
+
+    List<Uri> selectedImageUris = new ArrayList<>();
+    Uri photoUri;
     String type;
     int editItemId = -1;
     String initName, initDesc, initLoc, initDate, initContact, initCat;
@@ -34,35 +57,54 @@ public class ReportActivity extends BaseActivity {
         setContentView(R.layout.activity_report);
         applyWindowInsets(findViewById(R.id.rootReportLayout));
 
-        type=getIntent().getStringExtra("type");
-        if(type==null) type="LOST";
+        type = getIntent().getStringExtra("type");
+        if(type == null) type = "LOST";
         ((TextView)findViewById(R.id.tvReportTitle)).setText(
-                "LOST".equals(type)?"Report Lost Item":"Report Found Item");
+                "LOST".equals(type) ? "Report Lost Item" : "Report Found Item");
 
-        name=findViewById(R.id.etItemName);
-        desc=findViewById(R.id.etDescription);
-        location=findViewById(R.id.etLocation);
-        date=findViewById(R.id.etDate);
-        contact=findViewById(R.id.etContact);
-        category=findViewById(R.id.spCategory);
-        preview=findViewById(R.id.imgPreview);
-        photo=findViewById(R.id.btnPhoto);
-        submit=findViewById(R.id.btnSubmit);
-        cancel=findViewById(R.id.btnCancelReport);
+        name = findViewById(R.id.etItemName);
+        desc = findViewById(R.id.etDescription);
+        location = findViewById(R.id.etLocation);
+        date = findViewById(R.id.etDate);
+        contact = findViewById(R.id.etContact);
+        category = findViewById(R.id.spCategory);
+        photoBtn = findViewById(R.id.btnPhoto);
+        submit = findViewById(R.id.btnSubmit);
+        cancel = findViewById(R.id.btnCancelReport);
+        tvPhotoCount = findViewById(R.id.tvPhotoCount);
+        recyclerPhotos = findViewById(R.id.recyclerReportPhotos);
+
+        recyclerPhotos.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        imageAdapter = new ItemImageAdapter(this, true, new ItemImageAdapter.OnItemClickListener() {
+            @Override public void onItemClick(Object item, int position) {}
+            @Override public void onRemoveClick(int position) {
+                if (position >= 0 && position < selectedImageUris.size()) {
+                    selectedImageUris.remove(position);
+                    updatePhotoUI();
+                }
+            }
+        });
+        recyclerPhotos.setAdapter(imageAdapter);
 
         date.setFocusable(false);
         date.setClickable(true);
         date.setOnClickListener(v -> showDatePicker());
 
         if (getIntent().getIntExtra("edit_item_id", -1) == -1) {
-            java.util.Calendar cal = java.util.Calendar.getInstance();
-            updateDateLabel(cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH));
+            Calendar cal = Calendar.getInstance();
+            updateDateLabel(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
         }
 
         setupBottomNavigation(-1);
 
-        photo.setOnClickListener(v->pickImage());
-        submit.setOnClickListener(v->submit());
+        photoBtn.setOnClickListener(v -> {
+            if (selectedImageUris.size() >= 5) {
+                toast("Maximum 5 photos allowed.");
+                return;
+            }
+            pickImage();
+        });
+        submit.setOnClickListener(v -> submit());
         cancel.setOnClickListener(v -> handleCancel());
 
         editItemId = getIntent().getIntExtra("edit_item_id", -1);
@@ -90,6 +132,19 @@ public class ReportActivity extends BaseActivity {
                 handleCancel();
             }
         });
+
+        updatePhotoUI();
+    }
+
+    private void updatePhotoUI() {
+        int count = selectedImageUris.size();
+        tvPhotoCount.setText(count + "/5 photos");
+        if (count > 0) {
+            recyclerPhotos.setVisibility(View.VISIBLE);
+            imageAdapter.setUriItems(selectedImageUris);
+        } else {
+            recyclerPhotos.setVisibility(View.GONE);
+        }
     }
 
     private boolean hasChanges() {
@@ -97,7 +152,7 @@ public class ReportActivity extends BaseActivity {
             return !name.getText().toString().isEmpty() ||
                     !desc.getText().toString().isEmpty() ||
                     !location.getText().toString().isEmpty() ||
-                    imageUri != null;
+                    !selectedImageUris.isEmpty();
         }
         return !name.getText().toString().equals(initName) ||
                 !desc.getText().toString().equals(initDesc) ||
@@ -105,12 +160,12 @@ public class ReportActivity extends BaseActivity {
                 !date.getText().toString().equals(initDate) ||
                 !contact.getText().toString().equals(initContact) ||
                 !category.getSelectedItem().toString().equals(initCat) ||
-                imageUri != null;
+                !selectedImageUris.isEmpty();
     }
 
     private void handleCancel() {
         if (hasChanges()) {
-            new android.app.AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setTitle("Discard Changes?")
                     .setMessage("You have unsaved changes. Are you sure you want to cancel?")
                     .setPositiveButton("Discard", (d, w) -> finish())
@@ -122,7 +177,7 @@ public class ReportActivity extends BaseActivity {
     }
 
     private void showDatePicker() {
-        java.util.Calendar cal = java.util.Calendar.getInstance();
+        Calendar cal = Calendar.getInstance();
         if (editItemId != -1 || !date.getText().toString().isEmpty()) {
             try {
                 String[] parts = date.getText().toString().split("-");
@@ -131,12 +186,12 @@ public class ReportActivity extends BaseActivity {
                 }
             } catch (Exception ignored) {}
         }
-        new android.app.DatePickerDialog(this, (view, year, month, day) -> updateDateLabel(year, month, day),
-                cal.get(java.util.Calendar.YEAR), cal.get(java.util.Calendar.MONTH), cal.get(java.util.Calendar.DAY_OF_MONTH)).show();
+        new DatePickerDialog(this, (view, year, month, day) -> updateDateLabel(year, month, day),
+                cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
     }
 
     private void updateDateLabel(int year, int month, int day) {
-        date.setText(String.format(java.util.Locale.US, "%d-%02d-%02d", year, month + 1, day));
+        date.setText(String.format(Locale.US, "%d-%02d-%02d", year, month + 1, day));
     }
 
     private void setSpinnerSelection(Spinner s, String value) {
@@ -149,7 +204,7 @@ public class ReportActivity extends BaseActivity {
 
     private void pickImage() {
         String[] options = {"Take Photo", "Choose from Gallery"};
-        new android.app.AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle("Add Photo")
                 .setItems(options, (dialog, which) -> {
                     if (which == 0) openCamera();
@@ -160,22 +215,23 @@ public class ReportActivity extends BaseActivity {
     private void openGallery() {
         Intent i = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         i.setType("image/*");
+        i.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         startActivityForResult(i, 100);
     }
 
     private void openCamera() {
-        Intent i = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent i = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (i.resolveActivity(getPackageManager()) != null) {
             try {
-                File dir = getExternalFilesDir(android.os.Environment.DIRECTORY_PICTURES);
+                File dir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
                 File f = File.createTempFile("IMG_", ".jpg", dir);
-                photoUri = androidx.core.content.FileProvider.getUriForFile(this, "com.example.foundit.fileprovider", f);
+                photoUri = FileProvider.getUriForFile(this, "com.example.foundit.fileprovider", f);
             } catch (IOException e) {
                 toast("Could not create image file.");
             }
             if (photoUri != null) {
-                i.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, photoUri);
+                i.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                 startActivityForResult(i, 101);
             }
         } else {
@@ -186,20 +242,33 @@ public class ReportActivity extends BaseActivity {
     @Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            if (requestCode == 100 && data != null && data.getData() != null) {
-                imageUri = data.getData();
+            if (requestCode == 100) {
+                if (data != null) {
+                    if (data.getClipData() != null) {
+                        int count = data.getClipData().getItemCount();
+                        for (int i = 0; i < count; i++) {
+                            Uri uri = data.getClipData().getItemAt(i).getUri();
+                            if (selectedImageUris.size() < 5) {
+                                selectedImageUris.add(uri);
+                            }
+                        }
+                    } else if (data.getData() != null) {
+                        if (selectedImageUris.size() < 5) {
+                            selectedImageUris.add(data.getData());
+                        }
+                    }
+                }
             } else if (requestCode == 101) {
-                imageUri = photoUri;
+                if (photoUri != null && selectedImageUris.size() < 5) {
+                    selectedImageUris.add(photoUri);
+                }
             }
-            if (imageUri != null) {
-                preview.setVisibility(View.VISIBLE);
-                preview.setImageURI(imageUri);
-            }
+            updatePhotoUI();
         }
     }
 
     private RequestBody text(String value) {
-        return RequestBody.create(value==null?"":value, MediaType.parse("text/plain"));
+        return RequestBody.create(value == null ? "" : value, MediaType.parse("text/plain"));
     }
 
     private void submit() {
@@ -208,22 +277,73 @@ public class ReportActivity extends BaseActivity {
             return;
         }
 
-        MultipartBody.Part part=null;
-        if(imageUri!=null) {
+        submit.setEnabled(false);
+        toast("Processing images...");
+
+        // Process images off the UI thread
+        Executors.newSingleThreadExecutor().execute(() -> {
+            List<MultipartBody.Part> imageParts = new ArrayList<>();
+            MultipartBody.Part legacyPart = null;
+
             try {
-                byte[] bytes=readBytes(imageUri);
-                String mime=getContentResolver().getType(imageUri);
-                if(mime==null) mime="image/jpeg";
-                RequestBody body=RequestBody.create(bytes,MediaType.parse(mime));
-                String filename=getFileName(imageUri);
-                part=MultipartBody.Part.createFormData("image",filename,body);
-            } catch(Exception e) {
-                toast("Could not read image.");
+                for (int i = 0; i < selectedImageUris.size(); i++) {
+                    Uri uri = selectedImageUris.get(i);
+                    byte[] compressedBytes = compressImageToBytes(uri);
+                    if (compressedBytes != null) {
+                        RequestBody body = RequestBody.create(compressedBytes, MediaType.parse("image/jpeg"));
+                        String filename = "item_" + i + ".jpg";
+                        MultipartBody.Part part = MultipartBody.Part.createFormData("images[]", filename, body);
+                        imageParts.add(part);
+
+                        if (i == 0) {
+                            legacyPart = MultipartBody.Part.createFormData("image", filename, body);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                new Handler(Looper.getMainLooper()).post(() -> {
+                    submit.setEnabled(true);
+                    toast("Could not process images.");
+                });
                 return;
             }
+
+            final MultipartBody.Part finalLegacyPart = legacyPart;
+            final List<MultipartBody.Part> finalImageParts = imageParts;
+
+            new Handler(Looper.getMainLooper()).post(() -> executeApiCall(finalLegacyPart, finalImageParts));
+        });
+    }
+
+    private byte[] compressImageToBytes(Uri uri) throws IOException {
+        InputStream in = getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(in);
+        if (in != null) in.close();
+
+        if (bitmap == null) return null;
+
+        // Resize if too large (max dimension 1280px)
+        int maxDim = 1280;
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        if (width > maxDim || height > maxDim) {
+            float ratio = (float) width / height;
+            if (width > height) {
+                width = maxDim;
+                height = (int) (maxDim / ratio);
+            } else {
+                height = maxDim;
+                width = (int) (maxDim * ratio);
+            }
+            bitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
         }
 
-        submit.setEnabled(false);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, out);
+        return out.toByteArray();
+    }
+
+    private void executeApiCall(MultipartBody.Part legacyPart, List<MultipartBody.Part> imageParts) {
         Callback<ItemResponse> cb = new Callback<ItemResponse>() {
             @Override public void onResponse(Call<ItemResponse> c, Response<ItemResponse> r) {
                 submit.setEnabled(true);
@@ -253,7 +373,8 @@ public class ReportActivity extends BaseActivity {
                     text(date.getText().toString().trim()),
                     text(type),
                     text(contact.getText().toString().trim()),
-                    part
+                    legacyPart,
+                    imageParts
             ).enqueue(cb);
         } else {
             RetrofitClient.api().createItem(
@@ -265,27 +386,9 @@ public class ReportActivity extends BaseActivity {
                     text(date.getText().toString().trim()),
                     text(type),
                     text(contact.getText().toString().trim()),
-                    part
+                    legacyPart,
+                    imageParts
             ).enqueue(cb);
         }
-    }
-
-    private byte[] readBytes(Uri uri) throws IOException {
-        InputStream in=getContentResolver().openInputStream(uri);
-        ByteArrayOutputStream out=new ByteArrayOutputStream();
-        byte[] buf=new byte[8192]; int n;
-        while((n=in.read(buf))!=-1) out.write(buf,0,n);
-        in.close(); return out.toByteArray();
-    }
-
-    private String getFileName(Uri uri) {
-        Cursor c=getContentResolver().query(uri,null,null,null,null);
-        if(c!=null) {
-            try {
-                int idx=c.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                if(c.moveToFirst()&&idx>=0) return c.getString(idx);
-            } finally { c.close(); }
-        }
-        return "item.jpg";
     }
 }

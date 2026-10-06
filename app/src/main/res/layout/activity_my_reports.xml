@@ -14,9 +14,41 @@
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text="My Reports" android:textSize="28sp" android:textStyle="bold" android:padding="18dp"/>
 
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerMyReports"
-            android:layout_width="match_parent" android:layout_height="match_parent" android:padding="12dp"/>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerMyReports"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp"/>
+
+            <ProgressBar
+                android:id="@+id/progressMyReports"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvEmptyMyReports"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You have not submitted any reports yet."
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvErrorMyReports"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Failed to load your reports."
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+        </FrameLayout>
     </LinearLayout>
 
     <include

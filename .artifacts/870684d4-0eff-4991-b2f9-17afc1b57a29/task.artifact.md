@@ -1,18 +1,13 @@
-# Icon Fix Tasks
+# Tasks - FoundIT Phase 3
 
-- `[x]` 1. Replace legacy mipmap density resources with `new-cion.png`
-    - `[x]` Update `mdpi` resources
-    - `[x]` Update `hdpi` resources
-    - `[x]` Update `xhdpi` resources
-    - `[x]` Update `xxhdpi` resources
-    - `[x]` Update `xxxhdpi` resources
-- `[x]` 2. Update Adaptive Icon Configuration
-    - `[x]` Verify `res/mipmap-anydpi-v26/ic_launcher.xml`
-    - `[x]` Verify `res/mipmap-anydpi-v26/ic_launcher_round.xml`
-- `[x]` 3. Update Splash Screen & Branding
-    - `[x]` Update `res/drawable/new_cion.png` with `new-cion.png`
-- `[x]` 4. Verify Manifest and Themes
-    - `[x]` Verify `AndroidManifest.xml` points to `@mipmap/ic_launcher`
-    - `[x]` Verify `themes.xml` points to `@mipmap/ic_launcher`
-- `[x]` 5. Verification
-    - `[x]` Run Gradle build (assembleDebug)
+- [x] Backend: Create additive migration for `item_images`
+- [x] Backend: Create `ItemImage` model and update `Item` model
+- [x] Backend: Update `ItemController` for multi-photo support (up to 5), legacy fallback, and `date` search filter
+- [x] Android: Create `ItemImage` model and update `Item` model
+- [x] Android: Update `ApiService.java` for multi-image multipart and date query parameter
+- [x] Android: Create `ItemImageAdapter` and thumbnail layout
+- [x] Android: Implement off-UI thread image compression/resizing and multi-photo management in `ReportActivity`
+- [x] Android: Implement Date filter, Clear Date, and Stale Request Protection in `SearchActivity`
+- [x] Android: Implement thumbnail gallery and main image switcher in `ItemDetailActivity`
+- [x] Android: Enhance Loading, Empty, Error, and Content states across `MainActivity`, `SearchActivity`, `ItemDetailActivity`, and `MyReportsActivity`
+- [x] Verification: Run backend migration/tests and build Android app (`app:assembleDebug`)

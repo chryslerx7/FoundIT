@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.graphics.Color;
 import android.view.View;
 import android.widget.*;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.foundit.adapter.ItemImageAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
 import retrofit2.*;
@@ -16,6 +19,8 @@ public class ItemDetailActivity extends BaseActivity {
     Item currentItem;
     TextView name, type, category, location, date, description, reporter, status;
     ImageView image;
+    RecyclerView recyclerThumbnails;
+    ItemImageAdapter thumbnailAdapter;
     Button match, resolve, edit, delete;
     View layoutContent, layoutLoading, layoutError;
 
@@ -24,26 +29,44 @@ public class ItemDetailActivity extends BaseActivity {
         if(!requireLogin()) return;
         setContentView(R.layout.activity_item_detail);
         applyWindowInsets(findViewById(R.id.rootDetailLayout));
-        itemId=getIntent().getIntExtra("item_id",-1);
+        itemId = getIntent().getIntExtra("item_id", -1);
 
-        image=findViewById(R.id.imgDetail); name=findViewById(R.id.tvDetailName);
-        type=findViewById(R.id.tvDetailType); category=findViewById(R.id.tvDetailCategory);
-        location=findViewById(R.id.tvDetailLocation); date=findViewById(R.id.tvDetailDate);
-        description=findViewById(R.id.tvDetailDescription); reporter=findViewById(R.id.tvDetailReporter);
-        status=findViewById(R.id.tvDetailStatus);
-        match=findViewById(R.id.btnMatch); resolve=findViewById(R.id.btnResolve);
-        edit=findViewById(R.id.btnEdit); delete=findViewById(R.id.btnDelete);
+        image = findViewById(R.id.imgDetail);
+        recyclerThumbnails = findViewById(R.id.recyclerDetailThumbnails);
+        name = findViewById(R.id.tvDetailName);
+        type = findViewById(R.id.tvDetailType);
+        category = findViewById(R.id.tvDetailCategory);
+        location = findViewById(R.id.tvDetailLocation);
+        date = findViewById(R.id.tvDetailDate);
+        description = findViewById(R.id.tvDetailDescription);
+        reporter = findViewById(R.id.tvDetailReporter);
+        status = findViewById(R.id.tvDetailStatus);
+        match = findViewById(R.id.btnMatch);
+        resolve = findViewById(R.id.btnResolve);
+        edit = findViewById(R.id.btnEdit);
+        delete = findViewById(R.id.btnDelete);
         
         layoutContent = findViewById(R.id.layoutContent);
         layoutLoading = findViewById(R.id.layoutLoading);
         layoutError = findViewById(R.id.layoutError);
 
+        recyclerThumbnails.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        thumbnailAdapter = new ItemImageAdapter(this, false, new ItemImageAdapter.OnItemClickListener() {
+            @Override public void onItemClick(Object item, int position) {
+                if (item instanceof ItemImage) {
+                    Glide.with(ItemDetailActivity.this).load(((ItemImage) item).image_url).into(image);
+                }
+            }
+            @Override public void onRemoveClick(int position) {}
+        });
+        recyclerThumbnails.setAdapter(thumbnailAdapter);
+
         setupBottomNavigation(-1);
 
-        match.setOnClickListener(v->loadMatches());
-        resolve.setOnClickListener(v->resolve());
-        edit.setOnClickListener(v->edit());
-        delete.setOnClickListener(v->delete());
+        match.setOnClickListener(v -> loadMatches());
+        resolve.setOnClickListener(v -> resolve());
+        edit.setOnClickListener(v -> edit());
+        delete.setOnClickListener(v -> delete());
         findViewById(R.id.btnRetry).setOnClickListener(v -> load());
 
         load();
@@ -58,12 +81,13 @@ public class ItemDetailActivity extends BaseActivity {
         resolve.setVisibility(View.GONE);
         edit.setVisibility(View.GONE);
         delete.setVisibility(View.GONE);
+        match.setVisibility(View.GONE);
 
-        RetrofitClient.api().getItem(session.authHeader(),itemId)
+        RetrofitClient.api().getItem(session.authHeader(), itemId)
                 .enqueue(new Callback<ItemResponse>() {
-                    @Override public void onResponse(Call<ItemResponse> c,Response<ItemResponse> r) {
+                    @Override public void onResponse(Call<ItemResponse> c, Response<ItemResponse> r) {
                         layoutLoading.setVisibility(View.GONE);
-                        if(r.isSuccessful()&&r.body()!=null&&r.body().item!=null) {
+                        if(r.isSuccessful() && r.body() != null && r.body().item != null) {
                             bind(r.body().item);
                             layoutContent.setVisibility(View.VISIBLE);
                         } else {
@@ -71,7 +95,7 @@ public class ItemDetailActivity extends BaseActivity {
                             toast("Item not found.");
                         }
                     }
-                    @Override public void onFailure(Call<ItemResponse> c,Throwable t) {
+                    @Override public void onFailure(Call<ItemResponse> c, Throwable t) {
                         layoutLoading.setVisibility(View.GONE);
                         layoutError.setVisibility(View.VISIBLE);
                         toast("Connection failed.");
@@ -83,13 +107,29 @@ public class ItemDetailActivity extends BaseActivity {
         currentItem = x;
         name.setText(x.item_name);
         type.setText(x.type);
-        type.setBackgroundColor("FOUND".equalsIgnoreCase(x.type)?Color.rgb(46,173,103):Color.rgb(227,74,74));
-        category.setText("Category: "+x.category);
-        location.setText("Location: "+x.location);
-        date.setText("Date: "+x.date);
-        description.setText("Description: "+x.description);
-        reporter.setText(x.user==null?"":("Reported by: "+x.user.name));
-        if(x.image_url!=null&&!x.image_url.isEmpty()) Glide.with(this).load(x.image_url).into(image);
+        type.setBackgroundColor("FOUND".equalsIgnoreCase(x.type) ? Color.rgb(46,173,103) : Color.rgb(227,74,74));
+        category.setText("Category: " + x.category);
+        location.setText("Location: " + x.location);
+        date.setText("Date: " + x.date);
+        description.setText("Description: " + x.description);
+        reporter.setText(x.user == null ? "" : ("Reported by: " + x.user.name));
+
+        // Image display & thumbnails fallback
+        if (x.images != null && !x.images.isEmpty()) {
+            Glide.with(this).load(x.images.get(0).image_url).into(image);
+            if (x.images.size() > 1) {
+                recyclerThumbnails.setVisibility(View.VISIBLE);
+                thumbnailAdapter.setItemImages(x.images);
+            } else {
+                recyclerThumbnails.setVisibility(View.GONE);
+            }
+        } else if (x.image_url != null && !x.image_url.isEmpty()) {
+            Glide.with(this).load(x.image_url).into(image);
+            recyclerThumbnails.setVisibility(View.GONE);
+        } else {
+            image.setImageResource(android.R.drawable.ic_menu_gallery);
+            recyclerThumbnails.setVisibility(View.GONE);
+        }
 
         if ("RESOLVED".equalsIgnoreCase(x.status)) {
             status.setVisibility(View.VISIBLE);
@@ -105,25 +145,25 @@ public class ItemDetailActivity extends BaseActivity {
     }
 
     private void loadMatches() {
-        RetrofitClient.api().matches(session.authHeader(),itemId)
+        RetrofitClient.api().matches(session.authHeader(), itemId)
                 .enqueue(new Callback<ItemListResponse>() {
-                    @Override public void onResponse(Call<ItemListResponse> c,Response<ItemListResponse> r) {
+                    @Override public void onResponse(Call<ItemListResponse> c, Response<ItemListResponse> r) {
                         if (r.code() == 403) {
                             toast("Unauthorized: You can only view matches for your own reports.");
                             return;
                         }
-                        if(!r.isSuccessful()||r.body()==null||r.body().items==null) {toast("No matches.");return;}
-                        String[] names=new String[r.body().items.size()];
-                        for(int i=0;i<names.length;i++) names[i]=r.body().items.get(i).item_name+" ("+r.body().items.get(i).type+")";
+                        if(!r.isSuccessful() || r.body() == null || r.body().items == null) { toast("No matches."); return; }
+                        String[] names = new String[r.body().items.size()];
+                        for(int i = 0; i < names.length; i++) names[i] = r.body().items.get(i).item_name + " (" + r.body().items.get(i).type + ")";
                         new AlertDialog.Builder(ItemDetailActivity.this).setTitle("Possible Match Found")
-                                .setItems(names,(d,w)-> {
+                                .setItems(names, (d, w) -> {
                                     Intent i = new Intent(ItemDetailActivity.this, PossibleMatchActivity.class);
                                     i.putExtra("my_item_id", itemId);
                                     i.putExtra("other_item_id", r.body().items.get(w).id);
                                     startActivity(i);
-                                }).setPositiveButton("Close",null).show();
+                                }).setPositiveButton("Close", null).show();
                     }
-                    @Override public void onFailure(Call<ItemListResponse> c,Throwable t){toast("Could not find matches.");}
+                    @Override public void onFailure(Call<ItemListResponse> c, Throwable t) { toast("Could not find matches."); }
                 });
     }
 
