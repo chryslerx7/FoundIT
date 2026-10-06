@@ -1,18 +1,16 @@
-# Walkthrough - FoundIT Phase 4K (Dialogs, Bottom Sheets & Feedback UI)
+# Walkthrough - FoundIT Phase 4M (Global Premium Visual Redesign)
 
-Completed Phase 4K: Dialogs, Bottom Sheets & Feedback UI Refinement for the FoundIT Android application.
+Completed Phase 4M: Global Premium Visual Redesign for the FoundIT Android application.
 
 ## Summary of Changes
 
-### 1. Report Selection Bottom Sheet (`bottom_sheet_choose_report.xml` & `BaseActivity.java`)
-- Upgraded the Report FAB selection trigger (`chooseReport()`) from a standard alert dialog to a Material `BottomSheetDialog` featuring rounded top corners, a subtle drag handle, and selectable option cards for Lost (red accent) and Found (green accent).
+### 1. Final Global Color System (`res/values/colors.xml` & `res/values-night/colors.xml`)
+- Applied the finalized production color palette:
+  - **Light Theme**: Primary `#3157D5`, Primary Dark `#2444B8`, Primary Light `#EEF2FF`, Accent `#6D8CFF`, Background `#F7F9FC`, Surface `#FFFFFF`, Text `#111827`, Secondary `#667085`, Border `#E4E7EC`, LOST `#DC2626`, FOUND `#16A34A`.
+  - **Dark Theme**: Background `#0B1020`, Surface `#151C2E`, Elevated Surface `#1D263B`, Border `#2C3852`, Primary `#6D8CFF`, Text `#F8FAFC`, Secondary `#AAB4C5`, LOST `#F87171`, FOUND `#4ADE80`.
 
-### 2. Confirmation Dialogs
-- Upgraded the Logout action (`ProfileActivity.java`) with a Material 3 confirmation dialog ("Log out?", "Are you sure you want to log out of FoundIT?").
-- Upgraded Delete Report and Mark as Resolved actions (`ItemDetailActivity.java`) with Material 3 confirmation dialogs ("Delete Report?" and "Mark as Resolved?").
-
-### 3. Feedback & Loading Protection
-- Preserved and verified loading indicators, submission protection (disabling controls during network requests), and clear human-readable error/success messages.
+### 2. Global Consistency Across Screens
+- Verified that all screen components (Authentication, Home, Search, Item Details, My Reports, Profile, Notifications, Messages, Report flow, Bottom Sheet, Dialogs) maintain unified spacing, corner radius, typography hierarchy, and semantic color tokens without any broken views or duplicate files.
 
 ## Verification & Testing
 - **Build Status**: **SUCCESS** (`app:assembleDebug` completed with 0 errors).

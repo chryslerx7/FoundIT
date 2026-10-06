@@ -68,7 +68,6 @@ public class BaseActivity extends AppCompatActivity {
 
         View navBarCard = findViewById(R.id.navBarCard);
         if (navBarCard != null) navBarCard.setZ(0f);
-        add.setZ(100f);
         add.bringToFront();
 
         int blue = ContextCompat.getColor(this, R.color.foundit_primary);

@@ -183,9 +183,12 @@
                         <Spinner
                             android:id="@+id/spCategory"
                             android:layout_width="match_parent"
-                            android:layout_height="46dp"
+                            android:layout_height="48dp"
                             android:entries="@array/category_array"
+                            android:spinnerMode="dropdown"
+                            android:overlapAnchor="false"
                             android:background="@drawable/bg_rounded"
+                            android:popupBackground="@color/foundit_surface"
                             android:paddingHorizontal="12dp"/>
 
                         <com.google.android.material.textfield.TextInputLayout
