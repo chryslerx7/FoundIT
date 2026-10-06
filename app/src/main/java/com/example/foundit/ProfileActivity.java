@@ -39,7 +39,7 @@ public class ProfileActivity extends BaseActivity {
         // Dummy listeners for study UI
         findViewById(R.id.btnNotifications).setOnClickListener(v -> toast("Notification settings coming soon."));
         findViewById(R.id.btnHelp).setOnClickListener(v -> toast("Support center coming soon."));
-        findViewById(R.id.btnAbout).setOnClickListener(v -> toast("FoundIT v1.0"));
+        findViewById(R.id.btnAbout).setOnClickListener(v -> toast("FoundIT v1.1.0"));
     }
 
     private void showThemeDialog() {

@@ -9,12 +9,27 @@ import com.example.foundit.model.Message;
 import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.H> {
-    List<Message> list;
-    int myId;
+    public interface OnMessageLongClickListener {
+        void onMessageLongClick(Message message, int position);
+    }
+
+    private final List<Message> list;
+    private final int myId;
+    private OnMessageLongClickListener longClickListener;
 
     public MessageAdapter(List<Message> list, int myId) {
         this.list = list;
         this.myId = myId;
+    }
+
+    public MessageAdapter(List<Message> list, int myId, OnMessageLongClickListener longClickListener) {
+        this.list = list;
+        this.myId = myId;
+        this.longClickListener = longClickListener;
+    }
+
+    public void setOnMessageLongClickListener(OnMessageLongClickListener listener) {
+        this.longClickListener = listener;
     }
 
     @Override public int getItemViewType(int position) {
@@ -30,7 +45,16 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.H> {
     @Override public void onBindViewHolder(@NonNull H holder, int position) {
         Message m = list.get(position);
         holder.msg.setText(m.message);
-        holder.time.setText(m.createdAt != null ? m.createdAt.substring(11, 16) : "");
+        holder.time.setText(m.createdAt != null && m.createdAt.length() >= 16 ? m.createdAt.substring(11, 16) : "");
+
+        if (m.senderId == myId && longClickListener != null) {
+            holder.itemView.setOnLongClickListener(v -> {
+                longClickListener.onMessageLongClick(m, position);
+                return true;
+            });
+        } else {
+            holder.itemView.setOnLongClickListener(null);
+        }
     }
 
     @Override public int getItemCount() { return list.size(); }

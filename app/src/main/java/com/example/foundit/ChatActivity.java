@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.foundit.adapter.MessageAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import retrofit2.*;
@@ -47,7 +48,7 @@ public class ChatActivity extends BaseActivity {
         recycler = findViewById(R.id.recyclerMessages);
         etMessage = findViewById(R.id.etMessage);
 
-        adapter = new MessageAdapter(messages, session.userId());
+        adapter = new MessageAdapter(messages, session.userId(), (msg, pos) -> confirmDeleteMessage(msg, pos));
         recycler.setLayoutManager(new LinearLayoutManager(this));
         recycler.setAdapter(adapter);
 
@@ -97,6 +98,41 @@ public class ChatActivity extends BaseActivity {
         });
     }
 
+    private void confirmDeleteMessage(Message msg, int pos) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Delete message?")
+                .setMessage("Are you sure you want to delete this message?")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Delete", (d, w) -> deleteMessage(msg, pos))
+                .show();
+    }
+
+    private void deleteMessage(Message msg, int pos) {
+        RetrofitClient.api().deleteMessage(session.authHeader(), msg.id).enqueue(new Callback<ApiMessage>() {
+            @Override public void onResponse(Call<ApiMessage> c, Response<ApiMessage> r) {
+                if (r.isSuccessful()) {
+                    toast("Message deleted.");
+                    if (pos >= 0 && pos < messages.size()) {
+                        messages.remove(pos);
+                        adapter.notifyItemRemoved(pos);
+                    } else {
+                        loadMessages();
+                    }
+                } else {
+                    if (r.code() == 403) {
+                        toast("Unauthorized to delete this message.");
+                    } else {
+                        toast("Failed to delete message.");
+                    }
+                }
+            }
+
+            @Override public void onFailure(Call<ApiMessage> c, Throwable t) {
+                toast("Connection failed.");
+            }
+        });
+    }
+
     private void applyChatWindowInsets(View root) {
         if (root == null) return;
         ViewCompat.setOnApplyWindowInsetsListener(root, (v, insets) -> {
@@ -111,7 +147,6 @@ public class ChatActivity extends BaseActivity {
             View bottomContainer = findViewById(R.id.bottomChatContainer);
             if (bottomContainer != null) {
                 int bottomPadding = Math.max(systemBars.bottom, ime.bottom);
-                // Keep the original 12dp padding (converted to pixels) and add the inset
                 int density = (int) getResources().getDisplayMetrics().density;
                 int basePadding = 12 * density;
                 bottomContainer.setPadding(basePadding, basePadding, basePadding, bottomPadding > 0 ? bottomPadding : basePadding);
