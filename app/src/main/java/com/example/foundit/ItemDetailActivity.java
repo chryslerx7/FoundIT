@@ -1,6 +1,5 @@
 package com.example.foundit;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.graphics.Color;
@@ -12,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.example.foundit.adapter.ItemImageAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import retrofit2.*;
 
 public class ItemDetailActivity extends BaseActivity {
@@ -155,24 +155,27 @@ public class ItemDetailActivity extends BaseActivity {
                         if(!r.isSuccessful() || r.body() == null || r.body().items == null) { toast("No matches."); return; }
                         String[] names = new String[r.body().items.size()];
                         for(int i = 0; i < names.length; i++) names[i] = r.body().items.get(i).item_name + " (" + r.body().items.get(i).type + ")";
-                        new AlertDialog.Builder(ItemDetailActivity.this).setTitle("Possible Match Found")
+                        new MaterialAlertDialogBuilder(ItemDetailActivity.this)
+                                .setTitle("Possible Match Found")
                                 .setItems(names, (d, w) -> {
                                     Intent i = new Intent(ItemDetailActivity.this, PossibleMatchActivity.class);
                                     i.putExtra("my_item_id", itemId);
                                     i.putExtra("other_item_id", r.body().items.get(w).id);
                                     startActivity(i);
-                                }).setPositiveButton("Close", null).show();
+                                })
+                                .setPositiveButton("Close", null)
+                                .show();
                     }
                     @Override public void onFailure(Call<ItemListResponse> c, Throwable t) { toast("Could not find matches."); }
                 });
     }
 
     private void resolve() {
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("Mark as Resolved?")
-                .setMessage("Are you sure you want to mark this item as resolved?\n\nYou will no longer treat this report as an active Lost/Found report.")
+                .setMessage("Are you sure this report has been successfully resolved?")
                 .setNegativeButton("Cancel", null)
-                .setPositiveButton("Yes, Mark as Resolved", (d, w) -> {
+                .setPositiveButton("Mark as Resolved", (d, w) -> {
                     RetrofitClient.api().resolveItem(session.authHeader(), itemId)
                             .enqueue(new Callback<ApiMessage>() {
                                 @Override public void onResponse(Call<ApiMessage> c, Response<ApiMessage> r) {
@@ -192,7 +195,8 @@ public class ItemDetailActivity extends BaseActivity {
     }
 
     private void delete() {
-        new AlertDialog.Builder(this).setTitle("Delete Report")
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Delete Report?")
                 .setMessage("Are you sure you want to delete this report? This action cannot be undone.")
                 .setNegativeButton("Cancel", null)
                 .setPositiveButton("Delete", (d, w) -> {

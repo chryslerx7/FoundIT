@@ -1,20 +1,18 @@
-# Walkthrough - FoundIT Phase 4I (Messaging UI Redesign)
+# Walkthrough - FoundIT Phase 4K (Dialogs, Bottom Sheets & Feedback UI)
 
-Completed Phase 4I: Redesigning the Messaging and Conversation screens (`ConversationListActivity`, `ChatActivity`, conversation cards, sent/received message bubbles, and chat header/composer) using the **Modern Glass Campus** visual language.
+Completed Phase 4K: Dialogs, Bottom Sheets & Feedback UI Refinement for the FoundIT Android application.
 
 ## Summary of Changes
 
-### 1. Conversation Inbox Redesign (`activity_conversation_list.xml` & `item_conversation.xml`)
-- Upgraded the inbox header to use the containerless restrained header system ("Messages").
-- Redesigned conversation list items using CardView (`foundit_surface`, 14dp corner radius, 2dp elevation) with clear typography hierarchy (participant name, item tag, and last message preview).
+### 1. Report Selection Bottom Sheet (`bottom_sheet_choose_report.xml` & `BaseActivity.java`)
+- Upgraded the Report FAB selection trigger (`chooseReport()`) from a standard alert dialog to a Material `BottomSheetDialog` featuring rounded top corners, a subtle drag handle, and selectable option cards for Lost (red accent) and Found (green accent).
 
-### 2. Chat Conversation Redesign (`activity_chat.xml`, `item_message_sent.xml`, & `item_message_received.xml`)
-- Redesigned the chat header bar with a clean surface background, back button, and participant/match details.
-- Upgraded sent and received message bubbles with refined padding, corner rounding, and semantic color tokens (`foundit_primary` for sent, `foundit_surface` for received).
-- Upgraded the bottom message composer with rounded inputs and primary accent send buttons.
+### 2. Confirmation Dialogs
+- Upgraded the Logout action (`ProfileActivity.java`) with a Material 3 confirmation dialog ("Log out?", "Are you sure you want to log out of FoundIT?").
+- Upgraded Delete Report and Mark as Resolved actions (`ItemDetailActivity.java`) with Material 3 confirmation dialogs ("Delete Report?" and "Mark as Resolved?").
 
-### 3. Logic & Functionality Preservation
-- Preserved all existing Java logic in `ConversationListActivity.java` and `ChatActivity.java`, including API calls, real-time polling handlers (`3000ms`), message dispatch, and window inset handling.
+### 3. Feedback & Loading Protection
+- Preserved and verified loading indicators, submission protection (disabling controls during network requests), and clear human-readable error/success messages.
 
 ## Verification & Testing
 - **Build Status**: **SUCCESS** (`app:assembleDebug` completed with 0 errors).

@@ -113,6 +113,15 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void logout() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Log out?")
+                .setMessage("Are you sure you want to log out of FoundIT?")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Log Out", (dialog, which) -> executeLogout())
+                .show();
+    }
+
+    private void executeLogout() {
         RetrofitClient.api().logout(session.authHeader()).enqueue(new Callback<ApiMessage>() {
             @Override public void onResponse(Call<ApiMessage> c, Response<ApiMessage> r) {
                 session.clear(); goLogin();

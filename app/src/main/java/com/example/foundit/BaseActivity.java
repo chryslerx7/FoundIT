@@ -1,6 +1,5 @@
 package com.example.foundit;
 
-import android.app.AlertDialog;
 import android.content.*;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -15,6 +14,8 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import android.os.Bundle;
 import com.example.foundit.util.SessionManager;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class BaseActivity extends AppCompatActivity {
@@ -35,10 +36,8 @@ public class BaseActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             Insets ime = insets.getInsets(WindowInsetsCompat.Type.ime());
             
-            // Apply top padding for status bar
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             
-            // Handle bottom padding for navigation bar OR keyboard
             View bottomNav = findViewById(R.id.bottomNavContainer);
             if (bottomNav != null) {
                 int bottomPadding = Math.max(systemBars.bottom, ime.bottom);
@@ -89,23 +88,33 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void chooseReport() {
         if ("visitor".equalsIgnoreCase(session.role())) {
-            new AlertDialog.Builder(this)
+            new MaterialAlertDialogBuilder(this)
                     .setTitle("Access Restricted")
                     .setMessage("Please log in with a Student, Teacher, or Staff account to use this feature.")
                     .setPositiveButton("OK", null)
                     .show();
             return;
         }
-        String[] options = {"I Lost Something", "I Found Something", "Cancel"};
-        new AlertDialog.Builder(this)
-                .setTitle("What would you like to report?")
-                .setItems(options, (d, which) -> {
-                    if (which == 0 || which == 1) {
-                        Intent i = new Intent(this, ReportActivity.class);
-                        i.putExtra("type", which == 0 ? "LOST" : "FOUND");
-                        startActivity(i);
-                    }
-                }).show();
+
+        BottomSheetDialog sheet = new BottomSheetDialog(this);
+        View sheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_choose_report, null);
+        sheet.setContentView(sheetView);
+
+        sheetView.findViewById(R.id.btnOptionLost).setOnClickListener(v -> {
+            sheet.dismiss();
+            Intent i = new Intent(this, ReportActivity.class);
+            i.putExtra("type", "LOST");
+            startActivity(i);
+        });
+
+        sheetView.findViewById(R.id.btnOptionFound).setOnClickListener(v -> {
+            sheet.dismiss();
+            Intent i = new Intent(this, ReportActivity.class);
+            i.putExtra("type", "FOUND");
+            startActivity(i);
+        });
+
+        sheet.show();
     }
 
     private void setupDoubleTap() {

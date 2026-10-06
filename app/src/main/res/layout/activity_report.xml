@@ -1,8 +1,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootReportLayout"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/foundit_background">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/reportScrollView"
@@ -18,83 +19,344 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="18dp"
-            android:paddingBottom="80dp">
+            android:paddingBottom="90dp">
 
-            <TextView android:id="@+id/tvReportTitle" android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Report Lost Item" android:textSize="26sp" android:textStyle="bold"/>
-
+            <!-- Containerless Restrained Header -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="14dp"
-                android:gravity="center_vertical">
-
-                <Button android:id="@+id/btnPhoto" android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Add Photos (Max 5)"/>
+                android:orientation="vertical"
+                android:paddingHorizontal="20dp"
+                android:paddingTop="20dp"
+                android:paddingBottom="12dp"
+                android:layout_marginBottom="8dp">
 
                 <TextView
-                    android:id="@+id/tvPhotoCount"
+                    android:id="@+id/tvReportTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0/5 photos"
-                    android:layout_marginStart="12dp"
+                    android:text="Report Item"
+                    android:textSize="26sp"
                     android:textStyle="bold"
-                    android:textColor="@color/blue"/>
+                    android:textColor="@color/foundit_text_primary"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Fill in the details below to submit your report."
+                    android:textSize="13sp"
+                    android:textColor="@color/foundit_text_secondary"/>
             </LinearLayout>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerReportPhotos"
-                android:layout_width="match_parent"
-                android:layout_height="90dp"
-                android:layout_marginTop="8dp"
-                android:visibility="gone"
-                android:orientation="horizontal"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-            <EditText android:id="@+id/etItemName" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Item name" android:layout_marginTop="12dp"/>
-
-            <Spinner android:id="@+id/spCategory" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:entries="@array/category_array" android:layout_marginTop="10dp"/>
-
-            <EditText android:id="@+id/etDescription" android:layout_width="match_parent" android:layout_height="100dp"
-                android:hint="Description" android:gravity="top" android:layout_marginTop="10dp"/>
-
-            <EditText android:id="@+id/etLocation" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Location" android:layout_marginTop="10dp"/>
-
-            <EditText android:id="@+id/etDate" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Date (YYYY-MM-DD)" android:inputType="date" android:layout_marginTop="10dp"/>
-
-            <EditText android:id="@+id/etContact" android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:hint="Contact information" android:layout_marginTop="10dp"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="18dp"
-                android:layout_marginBottom="20dp">
-                <Button
-                    android:id="@+id/btnCancelReport"
-                    android:layout_width="0dp"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp">
+
+                <!-- Photos Section Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="CANCEL"
-                    android:textColor="@color/muted"
-                    style="@style/Widget.Material3.Button.TextButton"/>
-                <Button
-                    android:id="@+id/btnSubmit"
-                    android:layout_width="0dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Item Photos"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/foundit_text_primary"
+                            android:layout_marginBottom="2dp"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Add up to 5 photos to help identify your item."
+                            android:textSize="12sp"
+                            android:textColor="@color/foundit_text_secondary"
+                            android:layout_marginBottom="12dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <Button
+                                android:id="@+id/btnPhoto"
+                                android:layout_width="0dp"
+                                android:layout_height="44dp"
+                                android:layout_weight="1"
+                                android:text="Add Photos (Max 5)"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:backgroundTint="@color/foundit_primary"
+                                android:textColor="@android:color/white"
+                                app:elevation="0dp"/>
+
+                            <TextView
+                                android:id="@+id/tvPhotoCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0/5 photos"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/foundit_primary"
+                                android:layout_marginStart="12dp"/>
+                        </LinearLayout>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerReportPhotos"
+                            android:layout_width="match_parent"
+                            android:layout_height="90dp"
+                            android:layout_marginTop="12dp"
+                            android:visibility="gone"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Item Information Section Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1.5"
-                    android:text="SUBMIT REPORT"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/bg_blue_button"
-                    android:layout_marginStart="8dp"/>
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Item Details"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/foundit_text_primary"
+                            android:layout_marginBottom="14dp"/>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Item Name *"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etItemName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="textPersonName"
+                                android:singleLine="true"
+                                android:textColor="@color/foundit_text_primary"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Category"
+                            android:textSize="12sp"
+                            android:textColor="@color/foundit_text_secondary"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="4dp"/>
+
+                        <Spinner
+                            android:id="@+id/spCategory"
+                            android:layout_width="match_parent"
+                            android:layout_height="46dp"
+                            android:entries="@array/category_array"
+                            android:background="@drawable/bg_rounded"
+                            android:paddingHorizontal="12dp"/>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Description"
+                            android:layout_marginTop="14dp"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etDescription"
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:gravity="top"
+                                android:inputType="textMultiLine"
+                                android:textColor="@color/foundit_text_primary"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- When & Where Section Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="When &amp; Where"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/foundit_text_primary"
+                            android:layout_marginBottom="14dp"/>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Location *"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etLocation"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:singleLine="true"
+                                android:textColor="@color/foundit_text_primary"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Date (YYYY-MM-DD)"
+                            android:layout_marginTop="14dp"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etDate"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:focusable="false"
+                                android:clickable="true"
+                                android:inputType="date"
+                                android:singleLine="true"
+                                android:textColor="@color/foundit_text_primary"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Contact Information Section Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="24dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Contact Information"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/foundit_text_primary"
+                            android:layout_marginBottom="14dp"/>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Contact Details"
+                            app:boxBackgroundMode="outline"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusBottomEnd="12dp">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etContact"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text"
+                                android:singleLine="true"
+                                android:textColor="@color/foundit_text_primary"/>
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Action Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="24dp">
+
+                    <Button
+                        android:id="@+id/btnCancelReport"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_weight="1"
+                        android:text="CANCEL"
+                        android:textColor="@color/foundit_text_secondary"
+                        style="@style/Widget.Material3.Button.TextButton"/>
+
+                    <Button
+                        android:id="@+id/btnSubmit"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_weight="1.5"
+                        android:text="SUBMIT REPORT"
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/bg_blue_button"
+                        android:layout_marginStart="12dp"
+                        android:stateListAnimator="@null"
+                        app:elevation="0dp"/>
+                </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
