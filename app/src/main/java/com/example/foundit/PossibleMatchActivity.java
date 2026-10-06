@@ -1,7 +1,6 @@
 package com.example.foundit;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -9,6 +8,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
+import com.example.foundit.util.ItemStatus;
 import retrofit2.*;
 
 public class PossibleMatchActivity extends BaseActivity {
@@ -74,8 +74,8 @@ public class PossibleMatchActivity extends BaseActivity {
         name.setText(x.item_name);
         loc.setText(x.location);
         date.setText(x.date);
-        type.setText(x.type);
-        type.setBackgroundColor("FOUND".equalsIgnoreCase(x.type) ? Color.rgb(46, 173, 103) : Color.rgb(227, 74, 74));
+        type.setText(ItemStatus.displayLabel(x));
+        ItemStatus.applyBadge(this, type, x);
         if (x.image_url != null && !x.image_url.isEmpty()) Glide.with(this).load(x.image_url).into(img);
     }
 

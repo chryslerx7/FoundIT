@@ -1,6 +1,5 @@
 package com.example.foundit.adapter;
 
-import android.graphics.Color;
 import android.view.*;
 import android.widget.*;
 import androidx.annotation.NonNull;
@@ -8,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.foundit.R;
 import com.example.foundit.model.Item;
+import com.example.foundit.util.ItemStatus;
 import java.util.*;
 import android.content.Context;
 
@@ -40,10 +40,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Holder> {
         h.category.setText(item.category == null ? "" : item.category);
         h.location.setText(item.location == null ? "" : "📍 " + item.location);
         h.date.setText(item.date == null ? "" : "📅 " + item.date);
-        h.type.setText(item.type == null ? "" : item.type);
-
-        int bg = "FOUND".equalsIgnoreCase(item.type) ? Color.parseColor("#16A34A") : Color.parseColor("#DC2626");
-        h.type.setBackgroundColor(bg);
+        h.type.setText(ItemStatus.displayLabel(item));
+        // Single source of truth: RESOLVED wins over LOST/FOUND (covers Home, Search, My Reports).
+        ItemStatus.applyBadge(context, h.type, item);
 
         if (item.image_url != null && !item.image_url.isEmpty()) {
             Glide.with(context).load(item.image_url).centerCrop().into(h.image);

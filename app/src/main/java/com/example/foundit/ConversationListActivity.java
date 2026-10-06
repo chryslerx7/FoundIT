@@ -67,6 +67,14 @@ public class ConversationListActivity extends BaseActivity {
         load();
     }
 
+    @Override protected void onResume() {
+        super.onResume();
+        // Reload via the existing API so a conversation restored by an incoming
+        // message (recipient hide row removed server-side) reappears without
+        // any new polling system.
+        if (session != null && session.isLoggedIn()) load();
+    }
+
     private void updateEmptyState() {
         boolean empty = list.isEmpty();
         emptyView.setVisibility(empty ? View.VISIBLE : View.GONE);

@@ -79,6 +79,10 @@ public class ChatActivity extends BaseActivity {
                     messages.addAll(r.body().messages);
                     adapter.notifyDataSetChanged();
                     if (messages.size() > oldSize) recycler.scrollToPosition(messages.size() - 1);
+                } else if (r.code() == 403 || r.code() == 404 || r.code() == 410) {
+                    // Mutually deleted/closed conversation: do not crash; inform and exit.
+                    toast("Conversation no longer active. Start a new conversation to contact this user.");
+                    finish();
                 }
             }
             @Override public void onFailure(Call<MessageListResponse> c, Throwable t) {}
@@ -94,6 +98,10 @@ public class ChatActivity extends BaseActivity {
             @Override public void onResponse(Call<MessageResponse> c, Response<MessageResponse> r) {
                 if (r.isSuccessful() && r.body() != null) {
                     loadMessages();
+                } else if (r.code() == 410 || r.code() == 403 || r.code() == 404 || r.code() == 422) {
+                    // Server refused delivery into a mutually deleted/closed
+                    // conversation: surface existing-style feedback, no crash.
+                    toast("Conversation no longer active. Start a new conversation to contact this user.");
                 } else toast("Failed to send.");
             }
             @Override public void onFailure(Call<MessageResponse> c, Throwable t) { toast("Connection failed."); }

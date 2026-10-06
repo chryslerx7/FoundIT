@@ -2,7 +2,6 @@ package com.example.foundit;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.graphics.Color;
 import android.view.View;
 import android.widget.*;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +10,7 @@ import com.bumptech.glide.Glide;
 import com.example.foundit.adapter.ItemImageAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
+import com.example.foundit.util.ItemStatus;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import retrofit2.*;
 
@@ -111,8 +111,8 @@ public class ItemDetailActivity extends BaseActivity {
     private void bind(Item x) {
         currentItem = x;
         name.setText(x.item_name);
-        type.setText(x.type);
-        type.setBackgroundColor("FOUND".equalsIgnoreCase(x.type) ? Color.rgb(46,173,103) : Color.rgb(227,74,74));
+        // Primary badge reflects CURRENT state: RESOLVED wins over LOST/FOUND.
+        ItemStatus.applyBadge(this, type, x);
         category.setText("Category: " + x.category);
         location.setText("Location: " + x.location);
         date.setText("Date: " + x.date);
@@ -136,11 +136,9 @@ public class ItemDetailActivity extends BaseActivity {
             recyclerThumbnails.setVisibility(View.GONE);
         }
 
-        if ("RESOLVED".equalsIgnoreCase(x.status)) {
-            status.setVisibility(View.VISIBLE);
-        } else {
-            status.setVisibility(View.GONE);
-        }
+        // The primary badge above already communicates RESOLVED; keep the
+        // secondary badge hidden to avoid contradictory "RESOLVED + LOST" display.
+        status.setVisibility(View.GONE);
 
         boolean isOwner = x.user_id == session.userId();
         match.setVisibility(isOwner ? View.VISIBLE : View.GONE);
