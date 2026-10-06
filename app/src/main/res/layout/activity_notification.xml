@@ -1,8 +1,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootNotificationLayout"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/foundit_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,11 +12,40 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavContainer">
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Notifications" android:textSize="28sp" android:textStyle="bold" android:padding="18dp"/>
+        <!-- Containerless Restrained Header -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="12dp">
 
-        <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerNotifications"
-            android:layout_width="match_parent" android:layout_height="match_parent" android:padding="12dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Notifications"
+                android:textSize="26sp"
+                android:textStyle="bold"
+                android:textColor="@color/foundit_text_primary"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stay updated on your reports and matches."
+                android:textSize="13sp"
+                android:textColor="@color/foundit_text_secondary"/>
+        </LinearLayout>
+
+        <!-- RecyclerView Feed -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerNotifications"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:clipToPadding="false"/>
 
     </LinearLayout>
 

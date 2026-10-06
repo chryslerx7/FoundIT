@@ -1,5 +1,6 @@
 package com.example.foundit;
 
+import android.app.AlertDialog;
 import android.content.*;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -40,8 +41,6 @@ public class BaseActivity extends AppCompatActivity {
             // Handle bottom padding for navigation bar OR keyboard
             View bottomNav = findViewById(R.id.bottomNavContainer);
             if (bottomNav != null) {
-                // If keyboard is visible, ime.bottom will be > 0. 
-                // We want to add that padding to ensure the form resizes and remains scrollable.
                 int bottomPadding = Math.max(systemBars.bottom, ime.bottom);
                 bottomNav.setPadding(0, 0, 0, bottomPadding);
             }
@@ -56,12 +55,14 @@ public class BaseActivity extends AppCompatActivity {
 
         ImageButton home = findViewById(R.id.navHome);
         ImageButton search = findViewById(R.id.navSearch);
+        ImageButton messages = findViewById(R.id.navMessages);
         FloatingActionButton add = findViewById(R.id.navAdd);
         ImageButton reports = findViewById(R.id.navReports);
         ImageButton profile = findViewById(R.id.navProfile);
 
         home.setOnClickListener(v -> navigate(MainActivity.class));
         search.setOnClickListener(v -> navigate(SearchActivity.class));
+        messages.setOnClickListener(v -> navigate(ConversationListActivity.class));
         add.setOnClickListener(v -> chooseReport());
         reports.setOnClickListener(v -> navigate(MyReportsActivity.class));
         profile.setOnClickListener(v -> navigate(ProfileActivity.class));
@@ -71,9 +72,10 @@ public class BaseActivity extends AppCompatActivity {
         add.setZ(100f);
         add.bringToFront();
 
-        int blue = ContextCompat.getColor(this, R.color.blue);
+        int blue = ContextCompat.getColor(this, R.color.foundit_primary);
         if (activeId == R.id.navHome) home.setColorFilter(blue);
         else if (activeId == R.id.navSearch) search.setColorFilter(blue);
+        else if (activeId == R.id.navMessages) messages.setColorFilter(blue);
         else if (activeId == R.id.navReports) reports.setColorFilter(blue);
         else if (activeId == R.id.navProfile) profile.setColorFilter(blue);
     }
@@ -87,7 +89,7 @@ public class BaseActivity extends AppCompatActivity {
 
     protected void chooseReport() {
         if ("visitor".equalsIgnoreCase(session.role())) {
-            new android.app.AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setTitle("Access Restricted")
                     .setMessage("Please log in with a Student, Teacher, or Staff account to use this feature.")
                     .setPositiveButton("OK", null)
@@ -95,7 +97,7 @@ public class BaseActivity extends AppCompatActivity {
             return;
         }
         String[] options = {"I Lost Something", "I Found Something", "Cancel"};
-        new android.app.AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle("What would you like to report?")
                 .setItems(options, (d, which) -> {
                     if (which == 0 || which == 1) {

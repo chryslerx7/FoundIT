@@ -12,29 +12,30 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavContainer">
 
-        <!-- Top Header Card -->
+        <!-- Containerless Restrained Header -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp"
-            android:background="@color/foundit_primary">
+            android:paddingHorizontal="20dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="12dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="My Reports"
-                android:textSize="24sp"
+                android:textSize="26sp"
                 android:textStyle="bold"
-                android:textColor="@android:color/white"/>
+                android:textColor="@color/foundit_text_primary"
+                android:layout_marginBottom="4dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Manage the items you've reported."
                 android:textSize="13sp"
-                android:textColor="#E2E8F0"
-                android:layout_marginTop="4dp"/>
+                android:textColor="@color/foundit_text_secondary"/>
         </LinearLayout>
 
         <!-- Tabs Bar -->

@@ -10,4 +10,8 @@
 - [x] Phase 4E: Redesign `activity_item_detail.xml` with Modern Glass Campus hero image card, thumbnail gallery, structured metadata cards, description card, reporter card, and polished primary/owner action buttons
 - [x] Phase 4F: Redesign `activity_my_reports.xml` and `MyReportsActivity.java` with Modern Glass Campus header, LOST | FOUND | RESOLVED tab switching bar, filtered feeds, and polished empty/loading/error states
 - [x] Phase 4G: Redesign `activity_profile.xml` with Modern Glass Campus header banner, identity card, statistics card, grouped settings action cards, and destructive logout card
-- [x] Verification: Build Android app (`app:assembleDebug`) and verify compilation and Profile screen
+- [x] Phase 4H: Redesign `activity_notification.xml` and `notification_card.xml` with Modern Glass Campus header banner, card surfaces, and semantic icon accents
+- [x] Phase 4H.5: Global Header & Navigation Refinement (Bottom navigation with Messages replacing center Report button, Report moved to FAB, removed My Messages from Profile)
+- [x] Phase 4H.6: Premium Production Header Redesign (Replaced all large bright-blue rectangular headers across Home, Search, My Reports, Profile, and Notifications with containerless, typography-first restrained headers)
+- [x] Phase 4I: Redesign `activity_conversation_list.xml`, `item_conversation.xml`, `activity_chat.xml`, `item_message_sent.xml`, and `item_message_received.xml` with Modern Glass Campus surfaces, clean typography hierarchy, chat header bar, and ergonomic message composer
+- [x] Verification: Build Android app (`app:assembleDebug`) and verify compilation and messaging flows

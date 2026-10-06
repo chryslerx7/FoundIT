@@ -42,10 +42,15 @@
                 app:tint="@color/foundit_text_muted"
                 android:contentDescription="Search"/>
 
-            <View
+            <ImageButton
+                android:id="@+id/navMessages"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:src="@android:drawable/ic_dialog_email"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:tint="@color/foundit_text_muted"
+                android:contentDescription="Messages"/>
 
             <ImageButton
                 android:id="@+id/navReports"
@@ -79,9 +84,9 @@
         app:backgroundTint="@color/foundit_primary"
         app:tint="@android:color/white"
         app:layout_constraintBottom_toTopOf="@id/navBarCard"
-        app:layout_constraintTop_toTopOf="@id/navBarCard"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="12dp"
         android:elevation="20dp"
         app:elevation="20dp"
         android:translationZ="20dp"

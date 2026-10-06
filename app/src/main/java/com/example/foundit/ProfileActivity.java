@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.widget.*;
 import com.bumptech.glide.Glide;
 import com.example.foundit.api.RetrofitClient;
+import com.example.foundit.model.ApiMessage;
 import com.example.foundit.model.User;
 import com.example.foundit.util.ThemeManager;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -33,7 +34,6 @@ public class ProfileActivity extends BaseActivity {
 
         findViewById(R.id.btnEditProfile).setOnClickListener(v -> edit());
         findViewById(R.id.btnTheme).setOnClickListener(v -> showThemeDialog());
-        findViewById(R.id.btnMyMessages).setOnClickListener(v -> startActivity(new Intent(this, ConversationListActivity.class)));
         findViewById(R.id.btnLogout).setOnClickListener(v -> logout());
 
         // Dummy listeners for study UI
@@ -113,11 +113,11 @@ public class ProfileActivity extends BaseActivity {
     }
 
     private void logout() {
-        RetrofitClient.api().logout(session.authHeader()).enqueue(new Callback<com.example.foundit.model.ApiMessage>() {
-            @Override public void onResponse(Call<com.example.foundit.model.ApiMessage> c, Response<com.example.foundit.model.ApiMessage> r) {
+        RetrofitClient.api().logout(session.authHeader()).enqueue(new Callback<ApiMessage>() {
+            @Override public void onResponse(Call<ApiMessage> c, Response<ApiMessage> r) {
                 session.clear(); goLogin();
             }
-            @Override public void onFailure(Call<com.example.foundit.model.ApiMessage> c, Throwable t) {
+            @Override public void onFailure(Call<ApiMessage> c, Throwable t) {
                 session.clear(); goLogin();
             }
         });
