@@ -28,11 +28,22 @@ public class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapte
 
     @Override public void onBindViewHolder(@NonNull H holder, int position) {
         Conversation c = list.get(position);
-        boolean isOwnerOfLost = c.lostItem.user_id == myId;
-        String otherUser = isOwnerOfLost ? c.foundItem.user.name : c.lostItem.user.name;
+        String otherUser;
+        String itemName;
+        if (c.directItem != null) {
+            otherUser = (c.directItem.user != null && c.directItem.user.name != null)
+                    ? c.directItem.user.name : "Reporter";
+            itemName = c.directItem.item_name != null ? c.directItem.item_name : "";
+        } else {
+            boolean isOwnerOfLost = c.lostItem != null && c.lostItem.user_id == myId;
+            com.example.foundit.model.Item otherItem = isOwnerOfLost ? c.foundItem : c.lostItem;
+            otherUser = (otherItem != null && otherItem.user != null && otherItem.user.name != null)
+                    ? otherItem.user.name : "Reporter";
+            itemName = (c.lostItem != null && c.lostItem.item_name != null) ? c.lostItem.item_name : "";
+        }
 
         holder.user.setText(otherUser);
-        holder.item.setText("Item: " + c.lostItem.item_name);
+        holder.item.setText("Item: " + itemName);
         if (c.messages != null && !c.messages.isEmpty()) {
             holder.last.setText(c.messages.get(0).message);
         } else holder.last.setText("No messages yet.");

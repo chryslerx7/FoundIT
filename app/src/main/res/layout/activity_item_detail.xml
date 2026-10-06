@@ -208,6 +208,20 @@
 
                 <!-- Action Buttons -->
                 <Button
+                    android:id="@+id/btnMessageReporter"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="MESSAGE REPORTER"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/bg_blue_button"
+                    android:layout_marginBottom="10dp"
+                    android:visibility="gone"
+                    android:stateListAnimator="@null"
+                    app:elevation="0dp"/>
+
+                <Button
                     android:id="@+id/btnMatch"
                     android:layout_width="match_parent"
                     android:layout_height="52dp"

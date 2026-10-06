@@ -26,9 +26,20 @@ public class ConversationListActivity extends BaseActivity {
         adapter = new ConversationAdapter(list, session.userId(), c -> {
             Intent i = new Intent(this, ChatActivity.class);
             i.putExtra("conversation_id", c.id);
-            boolean isOwnerOfLost = c.lostItem.user_id == session.userId();
-            i.putExtra("other_user_name", isOwnerOfLost ? c.foundItem.user.name : c.lostItem.user.name);
-            i.putExtra("item_name", c.lostItem.item_name);
+            if (c.directItem != null) {
+                String other = (c.directItem.user != null && c.directItem.user.name != null)
+                        ? c.directItem.user.name : "Reporter";
+                i.putExtra("other_user_name", other);
+                i.putExtra("item_name", c.directItem.item_name != null ? c.directItem.item_name : "");
+                i.putExtra("chat_subtitle", c.directItem.item_name != null ? c.directItem.item_name : "");
+            } else {
+                boolean isOwnerOfLost = c.lostItem != null && c.lostItem.user_id == session.userId();
+                com.example.foundit.model.Item otherItem = isOwnerOfLost ? c.foundItem : c.lostItem;
+                String other = (otherItem != null && otherItem.user != null && otherItem.user.name != null)
+                        ? otherItem.user.name : "Reporter";
+                i.putExtra("other_user_name", other);
+                i.putExtra("item_name", (c.lostItem != null && c.lostItem.item_name != null) ? c.lostItem.item_name : "");
+            }
             startActivity(i);
         });
 

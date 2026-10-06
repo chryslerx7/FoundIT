@@ -145,6 +145,12 @@ public interface ApiService {
             @Field("found_item_id") int foundId
     );
 
+    @POST("items/{id}/conversation")
+    Call<ConversationResponse> startDirectConversation(
+            @Header("Authorization") String auth,
+            @Path("id") int itemId
+    );
+
     @GET("conversations/{id}/messages")
     Call<MessageListResponse> getMessages(@Header("Authorization") String auth, @Path("id") int id);
 

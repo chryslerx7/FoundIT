@@ -13,6 +13,14 @@ public class Conversation {
     public Item lostItem;
     @SerializedName("found_item")
     public Item foundItem;
+    @SerializedName("direct_item_id")
+    public Integer directItemId;
+    @SerializedName("user_one_id")
+    public Integer userOneId;
+    @SerializedName("user_two_id")
+    public Integer userTwoId;
+    @SerializedName("direct_item")
+    public Item directItem;
     public List<Message> messages;
     @SerializedName("created_at")
     public String createdAt;

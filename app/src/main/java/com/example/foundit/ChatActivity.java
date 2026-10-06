@@ -43,7 +43,9 @@ public class ChatActivity extends BaseActivity {
         String item = getIntent().getStringExtra("item_name");
 
         ((TextView)findViewById(R.id.tvChatWith)).setText(otherUser);
-        ((TextView)findViewById(R.id.tvChatMatch)).setText("Possible Match: " + item);
+        String subtitle = getIntent().getStringExtra("chat_subtitle");
+        if (subtitle == null) subtitle = "Possible Match: " + item;
+        ((TextView)findViewById(R.id.tvChatMatch)).setText(subtitle);
 
         recycler = findViewById(R.id.recyclerMessages);
         etMessage = findViewById(R.id.etMessage);

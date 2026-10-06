@@ -21,7 +21,8 @@ public class ItemDetailActivity extends BaseActivity {
     ImageView image;
     RecyclerView recyclerThumbnails;
     ItemImageAdapter thumbnailAdapter;
-    Button match, resolve, edit, delete;
+    Button match, resolve, edit, delete, messageReporter;
+    boolean openingChat = false;
     View layoutContent, layoutLoading, layoutError;
 
     @Override protected void onCreate(Bundle b) {
@@ -42,6 +43,7 @@ public class ItemDetailActivity extends BaseActivity {
         reporter = findViewById(R.id.tvDetailReporter);
         status = findViewById(R.id.tvDetailStatus);
         match = findViewById(R.id.btnMatch);
+        messageReporter = findViewById(R.id.btnMessageReporter);
         resolve = findViewById(R.id.btnResolve);
         edit = findViewById(R.id.btnEdit);
         delete = findViewById(R.id.btnDelete);
@@ -64,6 +66,7 @@ public class ItemDetailActivity extends BaseActivity {
         setupBottomNavigation(-1);
 
         match.setOnClickListener(v -> loadMatches());
+        messageReporter.setOnClickListener(v -> messageReporter());
         resolve.setOnClickListener(v -> resolve());
         edit.setOnClickListener(v -> edit());
         delete.setOnClickListener(v -> delete());
@@ -82,6 +85,8 @@ public class ItemDetailActivity extends BaseActivity {
         edit.setVisibility(View.GONE);
         delete.setVisibility(View.GONE);
         match.setVisibility(View.GONE);
+        messageReporter.setVisibility(View.GONE);
+        openingChat = false;
 
         RetrofitClient.api().getItem(session.authHeader(), itemId)
                 .enqueue(new Callback<ItemResponse>() {
@@ -139,9 +144,131 @@ public class ItemDetailActivity extends BaseActivity {
 
         boolean isOwner = x.user_id == session.userId();
         match.setVisibility(isOwner ? View.VISIBLE : View.GONE);
+        // Direct reporter messaging: visible only for active reports owned by someone else.
+        messageReporter.setVisibility(!isOwner && "ACTIVE".equalsIgnoreCase(x.status) ? View.VISIBLE : View.GONE);
         resolve.setVisibility(isOwner && "ACTIVE".equalsIgnoreCase(x.status) ? View.VISIBLE : View.GONE);
         edit.setVisibility(isOwner ? View.VISIBLE : View.GONE);
         delete.setVisibility(isOwner ? View.VISIBLE : View.GONE);
+    }
+
+    private void messageReporter() {
+        if (currentItem == null || openingChat) return;
+        if ("visitor".equalsIgnoreCase(session.role())) {
+            toast("Please log in to contact the user.");
+            return;
+        }
+
+        openingChat = true;
+        messageReporter.setEnabled(false);
+        messageReporter.setText("OPENING CHAT...");
+
+        RetrofitClient.api().startDirectConversation(session.authHeader(), itemId)
+                .enqueue(new Callback<ConversationResponse>() {
+                    @Override public void onResponse(Call<ConversationResponse> c, Response<ConversationResponse> r) {
+                        if (r.code() == 404) {
+                            // Backend predates v1.1.3: verify the report still exists,
+                            // then fall back to the legacy pair conversation.
+                            verifyItemThenFallback();
+                            return;
+                        }
+                        resetMessageButton();
+                        if (r.isSuccessful() && r.body() != null && r.body().conversation != null) {
+                            openChat(r.body().conversation);
+                        } else if (r.code() == 422) {
+                            toast("You cannot message your own report.");
+                        } else if (r.code() == 403) {
+                            toast("You are not allowed to contact this reporter.");
+                        } else {
+                            toast("Could not open chat.");
+                        }
+                    }
+                    @Override public void onFailure(Call<ConversationResponse> c, Throwable t) {
+                        resetMessageButton();
+                        toast("Connection failed.");
+                    }
+                });
+    }
+
+    private void resetMessageButton() {
+        openingChat = false;
+        messageReporter.setEnabled(true);
+        messageReporter.setText("MESSAGE REPORTER");
+    }
+
+    private void verifyItemThenFallback() {
+        RetrofitClient.api().getItem(session.authHeader(), itemId)
+                .enqueue(new Callback<ItemResponse>() {
+                    @Override public void onResponse(Call<ItemResponse> c, Response<ItemResponse> r) {
+                        if (r.isSuccessful() && r.body() != null && r.body().item != null) {
+                            fallbackLegacyPairing();
+                        } else {
+                            resetMessageButton();
+                            toast("This report is no longer available.");
+                        }
+                    }
+                    @Override public void onFailure(Call<ItemResponse> c, Throwable t) {
+                        resetMessageButton();
+                        toast("Connection failed.");
+                    }
+                });
+    }
+
+    // Pre-v1.1.3 backend compatibility: pair the viewed report with the
+    // viewer's own most recent active opposite-type report via the existing
+    // pair-conversation endpoint (firstOrCreate reuses duplicates).
+    private void fallbackLegacyPairing() {
+        RetrofitClient.api().myReports(session.authHeader())
+                .enqueue(new Callback<ItemListResponse>() {
+                    @Override public void onResponse(Call<ItemListResponse> c, Response<ItemListResponse> r) {
+                        if (r.isSuccessful() && r.body() != null && r.body().items != null && currentItem != null) {
+                            String need = "LOST".equalsIgnoreCase(currentItem.type) ? "FOUND" : "LOST";
+                            Item mine = null;
+                            for (Item it : r.body().items) {
+                                if (need.equalsIgnoreCase(it.type) && "ACTIVE".equalsIgnoreCase(it.status)) {
+                                    mine = it;
+                                    break;
+                                }
+                            }
+                            if (mine != null) {
+                                int lostId = "LOST".equalsIgnoreCase(currentItem.type) ? currentItem.id : mine.id;
+                                int foundId = "FOUND".equalsIgnoreCase(currentItem.type) ? currentItem.id : mine.id;
+                                RetrofitClient.api().startConversation(session.authHeader(), lostId, foundId)
+                                        .enqueue(new Callback<ConversationResponse>() {
+                                            @Override public void onResponse(Call<ConversationResponse> cc, Response<ConversationResponse> rr) {
+                                                resetMessageButton();
+                                                if (rr.isSuccessful() && rr.body() != null && rr.body().conversation != null) {
+                                                    openChat(rr.body().conversation);
+                                                } else {
+                                                    toast("Could not open chat.");
+                                                }
+                                            }
+                                            @Override public void onFailure(Call<ConversationResponse> cc, Throwable t) {
+                                                resetMessageButton();
+                                                toast("Connection failed.");
+                                            }
+                                        });
+                                return;
+                            }
+                        }
+                        resetMessageButton();
+                        toast("Could not open chat. Please try again later.");
+                    }
+                    @Override public void onFailure(Call<ItemListResponse> c, Throwable t) {
+                        resetMessageButton();
+                        toast("Connection failed.");
+                    }
+                });
+    }
+
+    private void openChat(Conversation conversation) {
+        Intent i = new Intent(this, ChatActivity.class);
+        i.putExtra("conversation_id", conversation.id);
+        String other = (currentItem != null && currentItem.user != null && currentItem.user.name != null)
+                ? currentItem.user.name : "Reporter";
+        i.putExtra("other_user_name", other);
+        i.putExtra("item_name", currentItem != null ? currentItem.item_name : "");
+        i.putExtra("chat_subtitle", currentItem != null ? currentItem.item_name : "");
+        startActivity(i);
     }
 
     private void loadMatches() {
