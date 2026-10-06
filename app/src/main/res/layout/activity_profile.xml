@@ -1,110 +1,313 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootProfileLayout"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/foundit_background">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="20dp" android:paddingBottom="80dp">
+        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer"
+        android:clipToPadding="false">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="My Profile" android:textSize="26sp" android:textStyle="bold"
-                android:layout_gravity="center_horizontal" android:layout_marginTop="10dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="90dp">
 
-            <androidx.cardview.widget.CardView
-                android:layout_width="120dp" android:layout_height="120dp"
-                app:cardCornerRadius="60dp" android:layout_gravity="center_horizontal"
-                android:layout_marginTop="30dp" app:cardElevation="4dp"
-                app:cardBackgroundColor="@color/surface">
-                <ImageView android:id="@+id/ivProfileImg" android:layout_width="match_parent"
-                    android:layout_height="match_parent" android:scaleType="centerCrop"
-                    android:src="@android:drawable/ic_menu_gallery" android:contentDescription="Profile Image"/>
-            </androidx.cardview.widget.CardView>
+            <!-- Top Header Banner -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp"
+                android:background="@color/foundit_primary"
+                android:layout_marginBottom="16dp">
 
-            <TextView android:id="@+id/tvProfileName" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:textSize="22sp" android:textStyle="bold"
-                android:layout_gravity="center_horizontal" android:layout_marginTop="16dp"
-                android:textColor="@color/text"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="My Profile"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"/>
 
-            <TextView android:id="@+id/tvProfileStudentId" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:textColor="@color/muted"
-                android:layout_gravity="center_horizontal"/>
-
-            <TextView android:id="@+id/tvProfileEmail" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:textColor="@color/muted"
-                android:layout_gravity="center_horizontal"/>
-
-            <TextView android:id="@+id/tvProfileRole" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:textColor="@color/blue"
-                android:textStyle="bold" android:layout_marginTop="4dp"
-                android:layout_gravity="center_horizontal"/>
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                android:orientation="horizontal" android:layout_marginTop="24dp" android:gravity="center">
-                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:orientation="vertical" android:gravity="center" android:padding="16dp">
-                    <TextView android:id="@+id/tvReportsCount" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:text="0" android:textSize="20sp"
-                        android:textStyle="bold" android:textColor="@color/blue"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Reports" android:textSize="14sp" android:textColor="@color/muted"/>
-                </LinearLayout>
-                <View android:layout_width="1dp" android:layout_height="40dp" android:background="@color/border"/>
-                <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"
-                    android:orientation="vertical" android:gravity="center" android:padding="16dp">
-                    <TextView android:id="@+id/tvResolvedCount" android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" android:text="0" android:textSize="20sp"
-                        android:textStyle="bold" android:textColor="@color/green"/>
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Resolved" android:textSize="14sp" android:textColor="@color/muted"/>
-                </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Manage your account and preferences."
+                    android:textSize="13sp"
+                    android:textColor="#E2E8F0"
+                    android:layout_marginTop="4dp"/>
             </LinearLayout>
 
-            <View android:layout_width="match_parent" android:layout_height="1dp"
-                android:background="@color/border" android:layout_marginTop="20dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingHorizontal="16dp">
 
-            <Button android:id="@+id/btnEditProfile" android:layout_width="match_parent"
-                android:layout_height="56dp" android:text="@string/profile_edit"
-                android:gravity="start|center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
-                style="@style/Widget.Material3.Button.TextButton"/>
+                <!-- Profile Identity Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="14dp">
 
-            <Button android:id="@+id/btnTheme" android:layout_width="match_parent"
-                android:layout_height="56dp" android:text="@string/profile_theme"
-                android:gravity="start|center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
-                style="@style/Widget.Material3.Button.TextButton"/>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp"
+                        android:gravity="center_horizontal">
 
-            <Button android:id="@+id/btnMyMessages" android:layout_width="match_parent"
-                android:layout_height="56dp" android:text="My Messages"
-                android:gravity="start|center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
-                style="@style/Widget.Material3.Button.TextButton"/>
+                        <androidx.cardview.widget.CardView
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            app:cardCornerRadius="48dp"
+                            app:cardElevation="0dp"
+                            app:cardBackgroundColor="@color/foundit_surface_elevated"
+                            android:layout_marginBottom="12dp">
 
-            <Button android:id="@+id/btnNotifications" android:layout_width="match_parent"
-                android:layout_height="56dp" android:text="@string/profile_notifications"
-                android:gravity="start|center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
-                style="@style/Widget.Material3.Button.TextButton"/>
+                            <ImageView
+                                android:id="@+id/ivProfileImg"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                android:src="@android:drawable/ic_menu_gallery"
+                                android:contentDescription="Profile Image"/>
+                        </androidx.cardview.widget.CardView>
 
-            <Button android:id="@+id/btnHelp" android:layout_width="match_parent"
-                android:layout_height="56dp" android:text="@string/profile_help"
-                android:gravity="start|center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
-                style="@style/Widget.Material3.Button.TextButton"/>
+                        <TextView
+                            android:id="@+id/tvProfileName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="20sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/foundit_text_primary"
+                            android:layout_marginBottom="2dp"/>
 
-            <Button android:id="@+id/btnAbout" android:layout_width="match_parent"
-                android:layout_height="56dp" android:text="@string/profile_about"
-                android:gravity="start|center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
-                style="@style/Widget.Material3.Button.TextButton"/>
+                        <TextView
+                            android:id="@+id/tvProfileStudentId"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp"
+                            android:textColor="@color/foundit_text_secondary"
+                            android:layout_marginBottom="2dp"/>
 
-            <Button android:id="@+id/btnLogout" android:layout_width="match_parent"
-                android:layout_height="56dp" android:text="@string/profile_logout"
-                android:gravity="start|center_vertical" android:paddingStart="20dp" android:paddingEnd="20dp"
-                android:textColor="@color/red"
-                style="@style/Widget.Material3.Button.TextButton"/>
+                        <TextView
+                            android:id="@+id/tvProfileEmail"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="13sp"
+                            android:textColor="@color/foundit_text_muted"
+                            android:layout_marginBottom="8dp"/>
 
+                        <TextView
+                            android:id="@+id/tvProfileRole"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/foundit_primary"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="3dp"
+                            android:background="@drawable/bg_rounded"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Statistics Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:padding="16dp"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tvReportsCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/foundit_primary"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Reports"
+                                android:textSize="13sp"
+                                android:textColor="@color/foundit_text_secondary"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="36dp"
+                            android:background="@color/foundit_border"/>
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:id="@+id/tvResolvedCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/foundit_found"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Resolved"
+                                android:textSize="13sp"
+                                android:textColor="@color/foundit_text_secondary"
+                                android:layout_marginTop="2dp"/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Action Buttons Card Group -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="16dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingVertical="4dp">
+
+                        <Button
+                            android:id="@+id/btnEditProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:text="@string/profile_edit"
+                            android:gravity="start|center_vertical"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/foundit_text_primary"
+                            style="@style/Widget.Material3.Button.TextButton"/>
+
+                        <Button
+                            android:id="@+id/btnMyMessages"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:text="My Messages"
+                            android:gravity="start|center_vertical"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/foundit_text_primary"
+                            style="@style/Widget.Material3.Button.TextButton"/>
+
+                        <Button
+                            android:id="@+id/btnTheme"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:text="@string/profile_theme"
+                            android:gravity="start|center_vertical"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/foundit_text_primary"
+                            style="@style/Widget.Material3.Button.TextButton"/>
+
+                        <Button
+                            android:id="@+id/btnNotifications"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:text="@string/profile_notifications"
+                            android:gravity="start|center_vertical"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/foundit_text_primary"
+                            style="@style/Widget.Material3.Button.TextButton"/>
+
+                        <Button
+                            android:id="@+id/btnHelp"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:text="@string/profile_help"
+                            android:gravity="start|center_vertical"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/foundit_text_primary"
+                            style="@style/Widget.Material3.Button.TextButton"/>
+
+                        <Button
+                            android:id="@+id/btnAbout"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:text="@string/profile_about"
+                            android:gravity="start|center_vertical"
+                            android:paddingStart="20dp"
+                            android:paddingEnd="20dp"
+                            android:textSize="14sp"
+                            android:textColor="@color/foundit_text_primary"
+                            style="@style/Widget.Material3.Button.TextButton"/>
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <!-- Logout Card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="@color/foundit_surface"
+                    android:layout_marginBottom="24dp">
+
+                    <Button
+                        android:id="@+id/btnLogout"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:text="@string/profile_logout"
+                        android:gravity="start|center_vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/foundit_lost"
+                        style="@style/Widget.Material3.Button.TextButton"/>
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 

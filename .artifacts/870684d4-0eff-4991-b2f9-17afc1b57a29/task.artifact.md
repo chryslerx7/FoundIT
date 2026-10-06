@@ -8,4 +8,6 @@
 - [x] Phase 4C: Redesign `activity_search.xml` with Modern Glass Campus header, filter card surface, polished spinners/date buttons, and result feed
 - [x] Phase 4D: Redesign `item_card.xml` and update `ItemAdapter.java` to support image anchoring (~92dp thumbnail), category, location emoji (`📍`), date emoji (`📅`), and semantic LOST/FOUND badge coloring
 - [x] Phase 4E: Redesign `activity_item_detail.xml` with Modern Glass Campus hero image card, thumbnail gallery, structured metadata cards, description card, reporter card, and polished primary/owner action buttons
-- [x] Verification: Build Android app (`app:assembleDebug`) and verify compilation and Item Details view
+- [x] Phase 4F: Redesign `activity_my_reports.xml` and `MyReportsActivity.java` with Modern Glass Campus header, LOST | FOUND | RESOLVED tab switching bar, filtered feeds, and polished empty/loading/error states
+- [x] Phase 4G: Redesign `activity_profile.xml` with Modern Glass Campus header banner, identity card, statistics card, grouped settings action cards, and destructive logout card
+- [x] Verification: Build Android app (`app:assembleDebug`) and verify compilation and Profile screen
