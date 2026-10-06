@@ -1,8 +1,9 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootSearchLayout"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/background">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/foundit_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,59 +12,180 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNavContainer">
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="16dp">
-            <EditText android:id="@+id/etSearch" android:layout_width="0dp" android:layout_height="48dp"
-                android:layout_weight="1" android:hint="Search by item name..." android:singleLine="true"
-                android:background="@drawable/bg_rounded" android:padding="12dp"/>
-            <Button android:id="@+id/btnSearch" android:layout_width="wrap_content" android:layout_height="48dp"
-                android:text="Search" android:layout_marginStart="8dp"/>
-        </LinearLayout>
-
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:layout_marginHorizontal="16dp" android:layout_marginBottom="8dp">
-            <Spinner android:id="@+id/spType" android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:entries="@array/type_array"/>
-            <Spinner android:id="@+id/spCategory" android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:entries="@array/search_category_array"/>
-        </LinearLayout>
-
+        <!-- Top Header & Search Bar Card -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginHorizontal="16dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@color/foundit_primary">
 
-            <Button
-                android:id="@+id/btnDateFilter"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                style="?android:attr/buttonStyleSmall"
-                android:text="Filter by Date: All" />
-
-            <Button
-                android:id="@+id/btnClearDate"
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="?android:attr/buttonStyleSmall"
-                android:text="Clear Date"
-                android:layout_marginStart="8dp"
-                android:visibility="gone" />
+                android:text="Search &amp; Browse"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:layout_marginBottom="14dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/etSearch"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:hint="Search lost or found items..."
+                    android:singleLine="true"
+                    android:background="@drawable/bg_rounded"
+                    android:backgroundTint="@color/foundit_surface"
+                    android:textColor="@color/foundit_text_primary"
+                    android:textColorHint="@color/foundit_text_muted"
+                    android:paddingHorizontal="16dp"
+                    android:textSize="14sp"/>
+
+                <Button
+                    android:id="@+id/btnSearch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:text="Search"
+                    android:layout_marginStart="10dp"
+                    android:backgroundTint="@color/foundit_surface"
+                    android:textColor="@color/foundit_primary"
+                    android:stateListAnimator="@null"
+                    app:elevation="0dp"/>
+            </LinearLayout>
         </LinearLayout>
 
-        <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1">
-            <androidx.recyclerview.widget.RecyclerView android:id="@+id/recyclerSearch"
-                android:layout_width="match_parent" android:layout_height="match_parent" android:padding="12dp"/>
-            <ProgressBar android:id="@+id/progressSearch" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:layout_gravity="center" android:visibility="gone"/>
-            <TextView android:id="@+id/tvEmptySearch" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="No matching items found."
-                android:layout_gravity="center" android:visibility="gone"/>
-            <TextView android:id="@+id/tvErrorSearch" android:layout_width="wrap_content"
-                android:layout_height="wrap_content" android:text="Failed to load search results."
-                android:layout_gravity="center" android:visibility="gone"/>
+        <!-- Filter Controls Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/foundit_surface"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <Spinner
+                        android:id="@+id/spType"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1"
+                        android:entries="@array/type_array"
+                        android:background="?attr/selectableItemBackground"/>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="24dp"
+                        android:background="@color/foundit_border"
+                        android:layout_marginHorizontal="8dp"/>
+
+                    <Spinner
+                        android:id="@+id/spCategory"
+                        android:layout_width="0dp"
+                        android:layout_height="44dp"
+                        android:layout_weight="1.2"
+                        android:entries="@array/search_category_array"
+                        android:background="?attr/selectableItemBackground"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/foundit_border"
+                    android:layout_marginVertical="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <Button
+                        android:id="@+id/btnDateFilter"
+                        android:layout_width="0dp"
+                        android:layout_height="38dp"
+                        android:layout_weight="1"
+                        style="?android:attr/buttonStyleSmall"
+                        android:text="Filter by Date: All"
+                        android:textSize="12sp"
+                        android:backgroundTint="@color/foundit_surface_elevated"
+                        android:textColor="@color/foundit_text_primary"
+                        app:elevation="0dp"/>
+
+                    <Button
+                        android:id="@+id/btnClearDate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="38dp"
+                        style="?android:attr/buttonStyleSmall"
+                        android:text="Clear"
+                        android:textSize="12sp"
+                        android:layout_marginStart="8dp"
+                        android:visibility="gone"
+                        android:backgroundTint="@color/foundit_surface_elevated"
+                        android:textColor="@color/foundit_lost"
+                        app:elevation="0dp"/>
+                </LinearLayout>
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Results / Content Area -->
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:clipToPadding="false"/>
+
+            <ProgressBar
+                android:id="@+id/progressSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/foundit_primary"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvEmptySearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No matching items found."
+                android:textColor="@color/foundit_text_secondary"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
+            <TextView
+                android:id="@+id/tvErrorSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Failed to load search results."
+                android:textColor="@color/foundit_lost"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
         </FrameLayout>
 
     </LinearLayout>

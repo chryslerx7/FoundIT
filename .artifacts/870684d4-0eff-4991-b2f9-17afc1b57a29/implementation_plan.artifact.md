@@ -1,51 +1,30 @@
-# Implementation Plan - FoundIT Phase 4A-1 (Global Design System & Authentication Redesign)
+# Implementation Plan - FoundIT Phase 4 (Modern Glass Campus Visual Language & Home/Dashboard Redesign)
 
-Implement Phase 4A-1 of the FoundIT Lost & Found application, establishing the global FoundIT design system with light and dark theme semantic colors, redesigning the Login and Register screens, and upgrading authentication loading and error states while preserving all existing logic, session management, and navigation.
+Implement the approved **Modern Glass Campus** design language across the FoundIT application, beginning with refining the semantic design system (especially for Dark Mode glassmorphic depth, luminous borders, and refined card surfaces) and redesigning the Home/Dashboard experience (`MainActivity` & `item_card.xml`).
 
 ## User Review Required
 
-- **Semantic Color Architecture**: Establishing semantic color tokens (`foundit_background`, `foundit_surface`, `foundit_primary`, `foundit_text_primary`, etc.) across `res/values/colors.xml` and `res/values-night/colors.xml`.
-- **UI-Only Auth Redesign**: Redesigning `LoginActivity` and `RegisterActivity` UI layouts with Material 3 TextInputLayouts and polished styling without altering backend calls, session management, or authentication logic.
+- **Modern Glass Campus Dark Mode**: Utilizing deep night slate backgrounds (`#0F172A`), translucent glass surface layers (`#1E293B`), subtle luminous borders (`#334155`), and vibrant campus accents (`#60A5FA` primary blue, `#4ADE80` found green, `#F87171` lost red).
+- **Home/Dashboard Redesign**: Upgrading `activity_main.xml` and `item_card.xml` to feature modern metric summary cards, search entry banner, and polished listing cards without breaking existing feed or bottom navigation logic.
 
 ## Proposed Changes
 
-### Global Design System
-
-#### [MODIFY] [colors.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/values/colors.xml)
-- Define comprehensive Light theme semantic colors (`foundit_background`, `foundit_surface`, `foundit_surface_elevated`, `foundit_primary`, `foundit_primary_pressed`, `foundit_primary_light`, `foundit_text_primary`, `foundit_text_secondary`, `foundit_text_muted`, `foundit_border`, `foundit_lost`, `foundit_found`, `foundit_warning`).
+### Modern Glass Campus Design System & Home Redesign
 
 #### [MODIFY] [colors.xml (night)](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/values-night/colors.xml)
-- Define comprehensive Dark theme semantic colors matching the design spec (Dark slate background `#0F172A`, surface `#1E293B`, primary `#60A5FA`, etc.).
+- Evolve dark mode tokens to support Modern Glass Campus aesthetic (`foundit_surface`: `#1E293B`, `foundit_surface_elevated`: `#263449`, `foundit_border`: `#334155`).
 
-#### [MODIFY] [themes.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/values/themes.xml) & [themes.xml (night)](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/values-night/themes.xml)
-- Update Material 3 DayNight themes to map primary colors, status bar, and navigation bar colors correctly.
+#### [MODIFY] [activity_main.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_main.xml)
+- Redesign Home header, metric summary cards (Lost vs Found counts), and search entry banner with Modern Glass Campus hierarchy.
 
----
-
-### Authentication Redesign
-
-#### [MODIFY] [activity_login.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_login.xml)
-- Redesign login layout using Material 3 `TextInputLayout`, `TextInputEditText`, polished spacing, typography hierarchy, primary blue button, and progress indicator.
-
-#### [MODIFY] [LoginActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/LoginActivity.java)
-- Ensure loading state disables button/inputs, prevents duplicate submissions, and handles errors cleanly.
-
-#### [MODIFY] [activity_register.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/activity_register.xml)
-- Redesign register layout with scrollable container, Material 3 inputs for Full Name, Student ID, School Email, Password, and Confirm Password with password toggle.
-
-#### [MODIFY] [RegisterActivity.java](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/java/com/example/foundit/RegisterActivity.java)
-- Ensure robust validation, loading state handling, and inline/toast error presentation.
-
-#### [MODIFY] [layout_bottom_navigation.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/layout_bottom_navigation.xml)
-- Update background and tint colors to use semantic tokens (`foundit_surface`, `foundit_muted`, etc.).
+#### [MODIFY] [item_card.xml](file:///C:/Users/jhed/AndroidStudioProjects/FoundIt/app/src/main/res/layout/item_card.xml)
+- Redesign item cards with CardView, rounded image corners, status badges (LOST/FOUND), and clean typography.
 
 ## Verification Plan
 
 ### Automated Tests
-- Build Android project (`app:assembleDebug`) to verify all XML resources, styles, and Java compilation.
+- Build Android project (`app:assembleDebug`) to verify all XML layouts, resources, and Java compilation.
 
 ### Manual Verification
-- Verify Login UI in Light and Dark modes.
-- Verify Register UI in Light and Dark modes.
-- Verify validation, loading state (duplicate submission prevention), password toggle.
-- Verify theme switching (Light, Dark, System Default).
+- Verify Home/Dashboard in Light and Dark (Glass Campus) modes.
+- Verify listing card rendering, badge styling, and pull-to-refresh.

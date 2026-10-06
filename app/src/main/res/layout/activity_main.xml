@@ -1,61 +1,195 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rootMainLayout"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:orientation="vertical" android:background="@color/background"
-    android:clipChildren="false" android:clipToPadding="false">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/foundit_background">
 
     <LinearLayout
-        android:layout_width="match_parent" android:layout_height="0dp"
-        android:layout_weight="1" android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavContainer">
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="vertical" android:padding="20dp" android:background="@color/blue">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
-                <TextView android:id="@+id/tvHello" android:layout_width="0dp" android:layout_height="wrap_content"
-                    android:layout_weight="1" android:text="FoundIT" android:textColor="@android:color/white"
-                    android:textSize="22sp" android:textStyle="bold"/>
-                <ImageButton android:id="@+id/btnNotifications" android:layout_width="48dp" android:layout_height="48dp"
-                    android:src="@android:drawable/ic_dialog_info" android:contentDescription="Notifications"
-                    android:background="@android:color/transparent"/>
+        <!-- Top Header & Search Entry -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:background="@color/foundit_primary">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tvHello"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FoundIT"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@android:color/white"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Campus Lost &amp; Found"
+                        android:textSize="13sp"
+                        android:textColor="#E2E8F0"/>
+                </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/btnNotifications"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@android:drawable/ic_dialog_info"
+                    android:contentDescription="Notifications"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:tint="@android:color/white"/>
             </LinearLayout>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                android:text="Good morning!" android:textColor="@android:color/white" android:textSize="14sp"/>
-            <EditText android:id="@+id/etHomeSearch" android:layout_width="match_parent" android:layout_height="46dp"
-                android:hint="Search lost or found items..." android:singleLine="true"
-                android:background="@drawable/bg_rounded" android:padding="12dp" android:layout_marginTop="14dp"/>
+
+            <!-- Search Entry Banner -->
+            <TextView
+                android:id="@+id/etHomeSearch"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="Search lost or found items..."
+                android:textColor="@color/foundit_text_muted"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="16dp"
+                android:background="@drawable/bg_rounded"
+                android:backgroundTint="@color/foundit_surface"
+                android:textSize="14sp"
+                android:clickable="true"
+                android:focusable="true"/>
         </LinearLayout>
 
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:orientation="horizontal" android:padding="12dp">
-            <TextView android:id="@+id/tvLostCount" android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:gravity="center" android:text="Lost Items\n0"
-                android:textSize="16sp" android:textStyle="bold" android:background="@drawable/bg_rounded" android:padding="14dp"/>
-            <Space android:layout_width="8dp" android:layout_height="1dp"/>
-            <TextView android:id="@+id/tvFoundCount" android:layout_width="0dp" android:layout_height="wrap_content"
-                android:layout_weight="1" android:gravity="center" android:text="Found Items\n0"
-                android:textSize="16sp" android:textStyle="bold" android:background="@drawable/bg_rounded" android:padding="14dp"/>
+        <!-- Metric Summary Cards -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="12dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/foundit_surface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvLostCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Lost Items\n0"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/foundit_lost"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <Space
+                android:layout_width="12dp"
+                android:layout_height="1dp"/>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/foundit_surface">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvFoundCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Found Items\n0"
+                        android:gravity="center"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/foundit_found"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
 
-        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:text="Recent Reports" android:textSize="20sp" android:textStyle="bold"
-            android:textColor="@color/text"
-            android:paddingStart="16dp" android:paddingTop="4dp" android:paddingBottom="4dp"/>
+        <!-- Section Header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Recent Reports"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/foundit_text_primary"
+            android:paddingHorizontal="18dp"
+            android:paddingVertical="6dp"/>
 
+        <!-- Feed / List -->
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipeRefresh" android:layout_width="match_parent" android:layout_height="0dp"
+            android:id="@+id/swipeRefresh"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1">
-            <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerItems" android:layout_width="match_parent" android:layout_height="match_parent"
-                    android:padding="12dp"/>
-                <TextView android:id="@+id/tvEmptyItems" android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" android:text="No recent reports found."
-                    android:layout_gravity="center" android:visibility="gone"/>
+                    android:id="@+id/recyclerItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="16dp"
+                    android:paddingBottom="16dp"
+                    android:clipToPadding="false"/>
+
+                <TextView
+                    android:id="@+id/tvEmptyItems"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No recent reports found."
+                    android:textColor="@color/foundit_text_secondary"
+                    android:layout_gravity="center"
+                    android:visibility="gone"/>
             </FrameLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 
-    <include layout="@layout/layout_bottom_navigation" />
+    <include
+        android:id="@+id/bottomNavContainer"
+        layout="@layout/layout_bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

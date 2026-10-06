@@ -1,9 +1,9 @@
-# Tasks - FoundIT Phase 4A-1
+# Tasks - FoundIT Phase 4 (Modern Glass Campus)
 
-- [x] Global Design System: Update Light and Dark semantic color definitions in `colors.xml` (`values` and `values-night`) and theme styles in `themes.xml`
-- [x] Authentication: Redesign `activity_login.xml` with Material 3 TextInputLayouts and polished layout
-- [x] Authentication: Update `LoginActivity.java` loading and error states
-- [x] Authentication: Redesign `activity_register.xml` with Material 3 TextInputLayouts and polished layout
-- [x] Authentication: Update `RegisterActivity.java` validation and loading states
-- [x] Shared Components: Update `layout_bottom_navigation.xml` with semantic color tokens
-- [x] Verification: Build Android app (`app:assembleDebug`) and verify Light/Dark/System themes and Auth flows
+- [x] Phase 4A-1: Global Design System & Authentication Redesign
+- [x] Modern Glass Campus: Evolve Dark Mode semantic tokens for glassmorphism and luminous borders
+- [x] Home Redesign: Update `activity_main.xml` with Modern Glass Campus header, search banner, and metric cards
+- [x] Card Redesign: Update `item_card.xml` with modern card styling and status badges
+- [x] Phase 4B: Redesign `activity_login.xml` and `activity_register.xml` with Modern Glass Campus card containers
+- [x] Phase 4C: Redesign `activity_search.xml` with Modern Glass Campus header, filter card surface, polished spinners/date buttons, and result feed
+- [x] Verification: Build Android app (`app:assembleDebug`) and verify compilation and search functionality
