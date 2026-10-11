@@ -9,7 +9,7 @@ public class RetrofitClient {
     // EMULATOR (Uncomment to use)
     // public static final String BASE_URL = "http://10.0.2.2:8000/api/";
 
-    // PHYSICAL PHONE (Use your PC's IPv4 address)
+    // Hosting Website
     public static final String BASE_URL = "https://foundit-api-production.up.railway.app/api/";
 
     private static Retrofit retrofit;

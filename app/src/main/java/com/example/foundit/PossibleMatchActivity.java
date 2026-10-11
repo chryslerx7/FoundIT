@@ -81,10 +81,6 @@ public class PossibleMatchActivity extends BaseActivity {
 
     private void startChat() {
         if (myItem == null || otherItem == null) return;
-        if ("visitor".equalsIgnoreCase(session.role())) {
-            toast("Please log in to contact the user.");
-            return;
-        }
 
         int lostId = "LOST".equalsIgnoreCase(myItem.type) ? myItem.id : otherItem.id;
         int foundId = "FOUND".equalsIgnoreCase(myItem.type) ? myItem.id : otherItem.id;

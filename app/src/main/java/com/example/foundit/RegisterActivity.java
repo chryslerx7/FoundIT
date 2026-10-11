@@ -37,10 +37,24 @@ public class RegisterActivity extends BaseActivity {
         String p = password.getText().toString();
         String pc = confirm.getText().toString();
 
-        if (n.isEmpty() || sid.isEmpty() || e.isEmpty() || p.isEmpty()) {
+        if (n.isEmpty() || e.isEmpty() || p.isEmpty()) {
             toast("Complete all fields.");
             return;
         }
+
+        boolean isBpsu = false;
+        if (e.contains("@")) {
+            String domain = e.substring(e.lastIndexOf("@") + 1).toLowerCase(java.util.Locale.US);
+            if (domain.equals("bpsu.edu.ph")) {
+                isBpsu = true;
+            }
+        }
+
+        if (isBpsu && sid.isEmpty()) {
+            toast("Student ID is required for BPSU student accounts.");
+            return;
+        }
+
         if (!p.equals(pc)) {
             toast("Passwords do not match.");
             return;

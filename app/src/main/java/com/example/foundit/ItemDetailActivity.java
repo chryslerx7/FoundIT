@@ -151,10 +151,6 @@ public class ItemDetailActivity extends BaseActivity {
 
     private void messageReporter() {
         if (currentItem == null || openingChat) return;
-        if ("visitor".equalsIgnoreCase(session.role())) {
-            toast("Please log in to contact the user.");
-            return;
-        }
 
         openingChat = true;
         messageReporter.setEnabled(false);

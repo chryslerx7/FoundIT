@@ -39,13 +39,20 @@
         </LinearLayout>
 
         <!-- RecyclerView Feed -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerNotifications"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeNotificationRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:clipToPadding="false"/>
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerNotifications"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"
+                android:clipToPadding="false"/>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 

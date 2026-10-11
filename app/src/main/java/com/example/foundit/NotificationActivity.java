@@ -4,32 +4,43 @@ import android.os.Bundle;
 import android.view.*;
 import android.widget.*;
 import androidx.recyclerview.widget.*;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.NotificationItem;
 import java.util.*;
 import retrofit2.*;
 
 public class NotificationActivity extends BaseActivity {
+    SwipeRefreshLayout swipeRefresh;
+    RecyclerView rv;
+
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
         if(!requireLogin()) return;
         setContentView(R.layout.activity_notification);
         applyWindowInsets(findViewById(R.id.rootNotificationLayout));
-        RecyclerView rv=findViewById(R.id.recyclerNotifications);
+        rv = findViewById(R.id.recyclerNotifications);
         rv.setLayoutManager(new LinearLayoutManager(this));
+        swipeRefresh = findViewById(R.id.swipeNotificationRefresh);
 
         setupBottomNavigation(-1);
 
-        load(rv);
+        swipeRefresh.setOnRefreshListener(this::load);
+        load();
     }
-    private void load(RecyclerView rv) {
+    private void load() {
+        swipeRefresh.setRefreshing(true);
         RetrofitClient.api().notifications(session.authHeader()).enqueue(new Callback<List<NotificationItem>>() {
             @Override public void onResponse(Call<List<NotificationItem>> c,Response<List<NotificationItem>> r) {
+                swipeRefresh.setRefreshing(false);
                 if(r.isSuccessful()&&r.body()!=null) {
                     rv.setAdapter(new NAdapter(r.body()));
                 }
             }
-            @Override public void onFailure(Call<List<NotificationItem>> c,Throwable t){toast("Could not load notifications.");}
+            @Override public void onFailure(Call<List<NotificationItem>> c,Throwable t){
+                swipeRefresh.setRefreshing(false);
+                toast("Could not load notifications.");
+            }
         });
     }
     class NAdapter extends RecyclerView.Adapter<NAdapter.H> {

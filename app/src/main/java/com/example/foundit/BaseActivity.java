@@ -86,15 +86,6 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected void chooseReport() {
-        if ("visitor".equalsIgnoreCase(session.role())) {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("Access Restricted")
-                    .setMessage("Please log in with a Student, Teacher, or Staff account to use this feature.")
-                    .setPositiveButton("OK", null)
-                    .show();
-            return;
-        }
-
         BottomSheetDialog sheet = new BottomSheetDialog(this);
         View sheetView = getLayoutInflater().inflate(R.layout.bottom_sheet_choose_report, null);
         sheet.setContentView(sheetView);

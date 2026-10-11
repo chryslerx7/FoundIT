@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.recyclerview.widget.*;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.foundit.adapter.ItemAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
@@ -19,6 +20,7 @@ public class MyReportsActivity extends BaseActivity {
     ProgressBar progress;
     TextView emptyText, errorText;
     Button btnTabLost, btnTabFound, btnTabResolved;
+    SwipeRefreshLayout swipeRefresh;
     List<Item> allReports = new ArrayList<>();
     int currentTab = 0; // 0 = LOST, 1 = FOUND, 2 = RESOLVED
 
@@ -34,6 +36,7 @@ public class MyReportsActivity extends BaseActivity {
         btnTabLost = findViewById(R.id.btnTabLost);
         btnTabFound = findViewById(R.id.btnTabFound);
         btnTabResolved = findViewById(R.id.btnTabResolved);
+        swipeRefresh = findViewById(R.id.swipeMyReportsRefresh);
 
         adapter = new ItemAdapter(this, item -> openItem(item.id));
         RecyclerView rv = findViewById(R.id.recyclerMyReports);
@@ -45,6 +48,7 @@ public class MyReportsActivity extends BaseActivity {
         btnTabLost.setOnClickListener(v -> { currentTab = 0; updateTabs(); filterAndDisplay(); });
         btnTabFound.setOnClickListener(v -> { currentTab = 1; updateTabs(); filterAndDisplay(); });
         btnTabResolved.setOnClickListener(v -> { currentTab = 2; updateTabs(); filterAndDisplay(); });
+        swipeRefresh.setOnRefreshListener(this::load);
     }
 
     @Override protected void onResume() {
@@ -75,6 +79,7 @@ public class MyReportsActivity extends BaseActivity {
         RetrofitClient.api().myReports(session.authHeader()).enqueue(new Callback<ItemListResponse>() {
             @Override public void onResponse(Call<ItemListResponse> c, Response<ItemListResponse> r) {
                 progress.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
                 if (r.isSuccessful() && r.body() != null && r.body().items != null) {
                     allReports = r.body().items;
                     filterAndDisplay();
@@ -86,6 +91,7 @@ public class MyReportsActivity extends BaseActivity {
             }
             @Override public void onFailure(Call<ItemListResponse> c, Throwable t) {
                 progress.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
                 errorText.setVisibility(View.VISIBLE);
                 toast("Connection failed.");
             }

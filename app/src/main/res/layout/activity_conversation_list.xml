@@ -39,27 +39,40 @@
                 android:textColor="@color/foundit_text_secondary"/>
         </LinearLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerConversations"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeConversationRefresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:clipToPadding="false"/>
+            android:layout_height="0dp"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/tvEmptyConversations"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No conversations yet.\nStart a conversation with another student about a Lost or Found item."
-            android:textSize="14sp"
-            android:gravity="center"
-            android:lineSpacingExtra="4dp"
-            android:textColor="@color/foundit_text_secondary"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="48dp"
-            android:paddingHorizontal="32dp"
-            android:visibility="gone"/>
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerConversations"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="8dp"
+                    android:clipToPadding="false"/>
+
+                <TextView
+                    android:id="@+id/tvEmptyConversations"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="No conversations yet.\nStart a conversation with another student about a Lost or Found item."
+                    android:textSize="14sp"
+                    android:gravity="center"
+                    android:lineSpacingExtra="4dp"
+                    android:textColor="@color/foundit_text_secondary"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="48dp"
+                    android:paddingHorizontal="32dp"
+                    android:visibility="gone"/>
+
+            </FrameLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </LinearLayout>
 

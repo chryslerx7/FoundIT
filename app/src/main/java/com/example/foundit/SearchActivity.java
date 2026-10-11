@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
 import androidx.recyclerview.widget.*;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.foundit.adapter.ItemAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
@@ -19,6 +20,7 @@ public class SearchActivity extends BaseActivity {
     ProgressBar progress;
     TextView emptyText, errorText;
     Button btnDateFilter, btnClearDate;
+    SwipeRefreshLayout swipeRefresh;
     String selectedDate = null;
     int requestSequence = 0;
     Call<ItemListResponse> currentCall;
@@ -37,6 +39,7 @@ public class SearchActivity extends BaseActivity {
         errorText = findViewById(R.id.tvErrorSearch);
         btnDateFilter = findViewById(R.id.btnDateFilter);
         btnClearDate = findViewById(R.id.btnClearDate);
+        swipeRefresh = findViewById(R.id.swipeSearchRefresh);
 
         adapter = new ItemAdapter(this, item -> openItem(item.id));
 
@@ -61,6 +64,7 @@ public class SearchActivity extends BaseActivity {
             btnClearDate.setVisibility(View.GONE);
             load();
         });
+        swipeRefresh.setOnRefreshListener(this::load);
 
         load();
     }
@@ -104,9 +108,13 @@ public class SearchActivity extends BaseActivity {
         currentCall.enqueue(new Callback<ItemListResponse>() {
             @Override public void onResponse(Call<ItemListResponse> c, Response<ItemListResponse> r) {
                 // Stale request protection
-                if (currentReqId != requestSequence) return;
+                if (currentReqId != requestSequence) {
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
 
                 progress.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
                 if (r.isSuccessful() && r.body() != null) {
                     adapter.setItems(r.body().items);
                     if (r.body().items.isEmpty()) {
@@ -121,10 +129,17 @@ public class SearchActivity extends BaseActivity {
                 }
             }
             @Override public void onFailure(Call<ItemListResponse> c, Throwable t) {
-                if (currentReqId != requestSequence) return;
-                if (c.isCanceled()) return; // Ignored if cancelled deliberately
+                if (currentReqId != requestSequence) {
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
+                if (c.isCanceled()) {
+                    swipeRefresh.setRefreshing(false);
+                    return;
+                }
 
                 progress.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
                 errorText.setVisibility(View.VISIBLE);
                 toast("Connection failed.");
             }

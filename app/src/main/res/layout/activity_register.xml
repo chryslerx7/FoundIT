@@ -67,7 +67,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Student ID"
+                    android:hint="Student ID (Optional)"
                     android:layout_marginTop="14dp"
                     app:boxBackgroundMode="outline"
                     app:boxCornerRadiusTopStart="12dp"
@@ -88,7 +88,7 @@
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="School Email"
+                    android:hint="Email"
                     android:layout_marginTop="14dp"
                     app:boxBackgroundMode="outline"
                     app:boxCornerRadiusTopStart="12dp"

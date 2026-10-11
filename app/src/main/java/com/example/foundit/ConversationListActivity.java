@@ -7,6 +7,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.foundit.adapter.ConversationAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
@@ -20,6 +21,7 @@ public class ConversationListActivity extends BaseActivity {
     ConversationAdapter adapter;
     List<Conversation> list = new ArrayList<>();
     TextView emptyView;
+    SwipeRefreshLayout swipeRefresh;
     boolean deleting = false;
 
     @Override protected void onCreate(Bundle b) {
@@ -30,6 +32,8 @@ public class ConversationListActivity extends BaseActivity {
 
         recycler = findViewById(R.id.recyclerConversations);
         emptyView = findViewById(R.id.tvEmptyConversations);
+        swipeRefresh = findViewById(R.id.swipeConversationRefresh);
+
         adapter = new ConversationAdapter(list, session.userId(), c -> {
             Intent i = new Intent(this, ChatActivity.class);
             i.putExtra("conversation_id", c.id);
@@ -64,14 +68,12 @@ public class ConversationListActivity extends BaseActivity {
         recycler.setAdapter(adapter);
 
         setupBottomNavigation(-1);
+        swipeRefresh.setOnRefreshListener(this::load);
         load();
     }
 
     @Override protected void onResume() {
         super.onResume();
-        // Reload via the existing API so a conversation restored by an incoming
-        // message (recipient hide row removed server-side) reappears without
-        // any new polling system.
         if (session != null && session.isLoggedIn()) load();
     }
 
@@ -133,8 +135,10 @@ public class ConversationListActivity extends BaseActivity {
     }
 
     private void load() {
+        swipeRefresh.setRefreshing(true);
         RetrofitClient.api().getConversations(session.authHeader()).enqueue(new Callback<ConversationListResponse>() {
             @Override public void onResponse(Call<ConversationListResponse> c, Response<ConversationListResponse> r) {
+                swipeRefresh.setRefreshing(false);
                 if (r.isSuccessful() && r.body() != null) {
                     list.clear();
                     list.addAll(r.body().conversations);
@@ -142,7 +146,10 @@ public class ConversationListActivity extends BaseActivity {
                     updateEmptyState();
                 }
             }
-            @Override public void onFailure(Call<ConversationListResponse> c, Throwable t) { toast("Connection failed."); }
+            @Override public void onFailure(Call<ConversationListResponse> c, Throwable t) {
+                swipeRefresh.setRefreshing(false);
+                toast("Connection failed.");
+            }
         });
     }
 }
