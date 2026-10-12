@@ -17,4 +17,5 @@ public class Item {
     public List<ItemImage> images;
     public User user;
     public String created_at;
+    public String draftId;
 }

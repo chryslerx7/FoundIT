@@ -13,14 +13,20 @@ import android.content.Context;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Holder> {
     public interface OnItemClick { void onClick(Item item); }
+    public interface OnItemLongClick { void onLongClick(Item item); }
 
     private final Context context;
     private List<Item> items = new ArrayList<>();
     private final OnItemClick listener;
+    private OnItemLongClick longClickListener;
 
     public ItemAdapter(Context context, OnItemClick listener) {
         this.context = context;
         this.listener = listener;
+    }
+
+    public void setOnItemLongClick(OnItemLongClick listener) {
+        this.longClickListener = listener;
     }
 
     public void setItems(List<Item> items) {
@@ -51,6 +57,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.Holder> {
         }
 
         h.itemView.setOnClickListener(v -> listener.onClick(item));
+        h.itemView.setOnLongClickListener(v -> {
+            if (longClickListener != null) {
+                longClickListener.onLongClick(item);
+                return true;
+            }
+            return false;
+        });
     }
 
     @Override public int getItemCount() { return items.size(); }

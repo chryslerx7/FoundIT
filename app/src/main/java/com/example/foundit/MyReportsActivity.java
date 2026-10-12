@@ -19,10 +19,10 @@ public class MyReportsActivity extends BaseActivity {
     ItemAdapter adapter;
     ProgressBar progress;
     TextView emptyText, errorText;
-    Button btnTabLost, btnTabFound, btnTabResolved;
+    Button btnTabLost, btnTabFound, btnTabResolved, btnTabDrafts;
     SwipeRefreshLayout swipeRefresh;
     List<Item> allReports = new ArrayList<>();
-    int currentTab = 0; // 0 = LOST, 1 = FOUND, 2 = RESOLVED
+    int currentTab = 0; // 0 = LOST, 1 = FOUND, 2 = RESOLVED, 3 = DRAFTS
 
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
@@ -36,9 +36,33 @@ public class MyReportsActivity extends BaseActivity {
         btnTabLost = findViewById(R.id.btnTabLost);
         btnTabFound = findViewById(R.id.btnTabFound);
         btnTabResolved = findViewById(R.id.btnTabResolved);
+        btnTabDrafts = findViewById(R.id.btnTabDrafts);
         swipeRefresh = findViewById(R.id.swipeMyReportsRefresh);
 
-        adapter = new ItemAdapter(this, item -> openItem(item.id));
+        adapter = new ItemAdapter(this, item -> {
+            if ("DRAFT".equals(item.status)) {
+                android.content.Intent i = new android.content.Intent(this, ReportActivity.class);
+                i.putExtra("draft_id", item.draftId);
+                startActivity(i);
+            } else {
+                openItem(item.id);
+            }
+        });
+        adapter.setOnItemLongClick(item -> {
+            if ("DRAFT".equals(item.status)) {
+                new com.google.android.material.dialog.MaterialAlertDialogBuilder(this)
+                        .setTitle("Delete Draft?")
+                        .setMessage("Are you sure you want to delete this draft?")
+                        .setPositiveButton("Delete", (dialog, which) -> {
+                            com.example.foundit.util.ReportDraftManager.deleteDraft(this, item.draftId);
+                            load();
+                            toast("Draft deleted.");
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+        });
+
         RecyclerView rv = findViewById(R.id.recyclerMyReports);
         rv.setLayoutManager(new LinearLayoutManager(this));
         rv.setAdapter(adapter);
@@ -48,6 +72,7 @@ public class MyReportsActivity extends BaseActivity {
         btnTabLost.setOnClickListener(v -> { currentTab = 0; updateTabs(); filterAndDisplay(); });
         btnTabFound.setOnClickListener(v -> { currentTab = 1; updateTabs(); filterAndDisplay(); });
         btnTabResolved.setOnClickListener(v -> { currentTab = 2; updateTabs(); filterAndDisplay(); });
+        btnTabDrafts.setOnClickListener(v -> { currentTab = 3; updateTabs(); filterAndDisplay(); });
         swipeRefresh.setOnRefreshListener(this::load);
     }
 
@@ -69,9 +94,19 @@ public class MyReportsActivity extends BaseActivity {
 
         btnTabResolved.setBackgroundColor(currentTab == 2 ? primaryColor : surfaceElevated);
         btnTabResolved.setTextColor(currentTab == 2 ? Color.WHITE : textPrimary);
+
+        btnTabDrafts.setBackgroundColor(currentTab == 3 ? primaryColor : surfaceElevated);
+        btnTabDrafts.setTextColor(currentTab == 3 ? Color.WHITE : textPrimary);
     }
 
     private void load() {
+        if (currentTab == 3) {
+            progress.setVisibility(View.GONE);
+            swipeRefresh.setRefreshing(false);
+            filterAndDisplay();
+            return;
+        }
+
         progress.setVisibility(View.VISIBLE);
         emptyText.setVisibility(View.GONE);
         errorText.setVisibility(View.GONE);
@@ -100,6 +135,33 @@ public class MyReportsActivity extends BaseActivity {
 
     private void filterAndDisplay() {
         List<Item> filtered = new ArrayList<>();
+        if (currentTab == 3) {
+            List<com.example.foundit.util.ReportDraftManager.ReportDraft> drafts = 
+                com.example.foundit.util.ReportDraftManager.getDrafts(this, session.userId());
+            for (com.example.foundit.util.ReportDraftManager.ReportDraft d : drafts) {
+                Item item = new Item();
+                item.draftId = d.draftId;
+                item.item_name = (d.name == null || d.name.isEmpty()) ? "Untitled draft" : d.name;
+                item.category = d.category;
+                item.type = d.type;
+                item.status = "DRAFT";
+                item.date = d.date;
+                item.location = d.location;
+                if (d.imageUriStrings != null && !d.imageUriStrings.isEmpty()) {
+                    item.image_url = d.imageUriStrings.get(0);
+                }
+                filtered.add(item);
+            }
+            adapter.setItems(filtered);
+            if (filtered.isEmpty()) {
+                emptyText.setVisibility(View.VISIBLE);
+                emptyText.setText("No saved drafts found.");
+            } else {
+                emptyText.setVisibility(View.GONE);
+            }
+            return;
+        }
+
         for (Item item : allReports) {
             String status = item.status == null ? "ACTIVE" : item.status;
             String type = item.type == null ? "LOST" : item.type;

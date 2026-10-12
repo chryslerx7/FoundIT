@@ -51,17 +51,17 @@ public class ReportActivity extends BaseActivity {
     String type;
     int editItemId = -1;
     String initName, initDesc, initLoc, initDate, initContact, initCat;
+    String currentDraftId;
+    boolean isFinishingSuccessfully = false;
+    boolean isExistingDraft = false;
+    boolean isDiscarded = false;
+    boolean isDraftPersisted = false;
 
     @Override protected void onCreate(Bundle b) {
         super.onCreate(b);
         if(!requireLogin()) return;
         setContentView(R.layout.activity_report);
         applyWindowInsets(findViewById(R.id.rootReportLayout));
-
-        type = getIntent().getStringExtra("type");
-        if(type == null) type = "LOST";
-        ((TextView)findViewById(R.id.tvReportTitle)).setText(
-                "LOST".equals(type) ? "Report Lost Item" : "Report Found Item");
 
         name = findViewById(R.id.etItemName);
         desc = findViewById(R.id.etDescription);
@@ -74,6 +74,72 @@ public class ReportActivity extends BaseActivity {
         cancel = findViewById(R.id.btnCancelReport);
         tvPhotoCount = findViewById(R.id.tvPhotoCount);
         recyclerPhotos = findViewById(R.id.recyclerReportPhotos);
+
+        type = getIntent().getStringExtra("type");
+        if(type == null) type = "LOST";
+        editItemId = getIntent().getIntExtra("edit_item_id", -1);
+
+        if (b != null) {
+            currentDraftId = b.getString("current_draft_id");
+            isExistingDraft = b.getBoolean("is_existing_draft", false);
+            isDiscarded = b.getBoolean("is_discarded", false);
+            isDraftPersisted = b.getBoolean("is_draft_persisted", false);
+            type = b.getString("type", type);
+            editItemId = b.getInt("edit_item_id", editItemId);
+            name.setText(b.getString("name_text", ""));
+            desc.setText(b.getString("desc_text", ""));
+            location.setText(b.getString("location_text", ""));
+            date.setText(b.getString("date_text", ""));
+            contact.setText(b.getString("contact_text", ""));
+            category.setSelection(b.getInt("category_position", 0));
+            initName = b.getString("init_name");
+            initDesc = b.getString("init_desc");
+            initLoc = b.getString("init_loc");
+            initDate = b.getString("init_date");
+            initContact = b.getString("init_contact");
+            initCat = b.getString("init_cat");
+            @SuppressWarnings("deprecation")
+            ArrayList<Uri> restoredUris = b.getParcelableArrayList("selected_image_uris");
+            if (restoredUris != null) {
+                selectedImageUris = restoredUris;
+            }
+            @SuppressWarnings("deprecation")
+            Uri restoredPhotoUri = b.getParcelable("photo_uri");
+            photoUri = restoredPhotoUri;
+        } else {
+            String draftIdExtra = getIntent().getStringExtra("draft_id");
+            if (draftIdExtra != null) {
+                currentDraftId = draftIdExtra;
+                isExistingDraft = true;
+                isDraftPersisted = true;
+                com.example.foundit.util.ReportDraftManager.ReportDraft draft = 
+                    com.example.foundit.util.ReportDraftManager.getDraft(this, currentDraftId);
+                if (draft != null) {
+                    type = draft.type != null ? draft.type : "LOST";
+                    name.setText(draft.name != null ? draft.name : "");
+                    desc.setText(draft.description != null ? draft.description : "");
+                    location.setText(draft.location != null ? draft.location : "");
+                    date.setText(draft.date != null ? draft.date : "");
+                    contact.setText(draft.contact != null ? draft.contact : "");
+                    setSpinnerSelection(category, draft.category);
+                    if (draft.imageUriStrings != null) {
+                        selectedImageUris.clear();
+                        for (String uStr : draft.imageUriStrings) {
+                            try { selectedImageUris.add(Uri.parse(uStr)); } catch (Exception ignored) {}
+                        }
+                    }
+                }
+            } else {
+                currentDraftId = java.util.UUID.randomUUID().toString();
+                isExistingDraft = false;
+            }
+        }
+
+        ((TextView)findViewById(R.id.tvReportTitle)).setText(
+                editItemId != -1 ? "Edit Report" : ("LOST".equals(type) ? "Report Lost Item" : "Report Found Item"));
+        if (editItemId != -1) {
+            submit.setText("UPDATE REPORT");
+        }
 
         recyclerPhotos.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         imageAdapter = new ItemImageAdapter(this, true, new ItemImageAdapter.OnItemClickListener() {
@@ -91,9 +157,11 @@ public class ReportActivity extends BaseActivity {
         date.setClickable(true);
         date.setOnClickListener(v -> showDatePicker());
 
-        if (getIntent().getIntExtra("edit_item_id", -1) == -1) {
-            Calendar cal = Calendar.getInstance();
-            updateDateLabel(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+        if (b == null) {
+            if (editItemId == -1) {
+                Calendar cal = Calendar.getInstance();
+                updateDateLabel(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+            }
         }
 
         setupBottomNavigation(-1);
@@ -108,10 +176,7 @@ public class ReportActivity extends BaseActivity {
         submit.setOnClickListener(v -> submit());
         cancel.setOnClickListener(v -> handleCancel());
 
-        editItemId = getIntent().getIntExtra("edit_item_id", -1);
-        if (editItemId != -1) {
-            ((TextView)findViewById(R.id.tvReportTitle)).setText("Edit Report");
-            submit.setText("UPDATE REPORT");
+        if (editItemId != -1 && b == null) {
             initName = getIntent().getStringExtra("name");
             initDesc = getIntent().getStringExtra("description");
             initLoc = getIntent().getStringExtra("location");
@@ -164,17 +229,52 @@ public class ReportActivity extends BaseActivity {
                 !selectedImageUris.isEmpty();
     }
 
-    private void handleCancel() {
-        if (hasChanges()) {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("Cancel Report?")
-                    .setMessage("Your changes will be lost if you leave this screen.")
-                    .setNegativeButton("Keep Editing", null)
-                    .setPositiveButton("Cancel", (d, w) -> finish())
-                    .show();
-        } else {
-            finish();
+    @Override protected void onPause() {
+        super.onPause();
+        if (!isDiscarded && !isFinishingSuccessfully) {
+            saveCurrentDraft();
         }
+    }
+
+    private void saveCurrentDraft() {
+        if (editItemId != -1 || isFinishingSuccessfully || isDiscarded) return;
+        if (!hasChanges()) return;
+        isDraftPersisted = true;
+        com.example.foundit.util.ReportDraftManager.ReportDraft draft = 
+            new com.example.foundit.util.ReportDraftManager.ReportDraft();
+        draft.draftId = currentDraftId;
+        draft.userId = session.userId();
+        draft.type = type;
+        draft.name = name != null ? name.getText().toString().trim() : "";
+        draft.category = category != null ? category.getSelectedItem().toString() : "";
+        draft.description = desc != null ? desc.getText().toString().trim() : "";
+        draft.location = location != null ? location.getText().toString().trim() : "";
+        draft.date = date != null ? date.getText().toString().trim() : "";
+        draft.contact = contact != null ? contact.getText().toString().trim() : "";
+        draft.imageUriStrings = new ArrayList<>();
+        for (Uri uri : selectedImageUris) {
+            draft.imageUriStrings.add(uri.toString());
+        }
+        draft.lastEditedTime = System.currentTimeMillis();
+        com.example.foundit.util.ReportDraftManager.saveDraft(this, draft);
+    }
+
+    private void handleCancel() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Leave this report?")
+                .setMessage("Would you like to keep this report as a draft or discard it?")
+                .setPositiveButton("Discard", (d, w) -> {
+                    isDiscarded = true;
+                    if (isDraftPersisted && currentDraftId != null) {
+                        com.example.foundit.util.ReportDraftManager.deleteDraft(this, currentDraftId);
+                    }
+                    toast("Draft discarded.");
+                    finish();
+                })
+                .setNegativeButton("Keep Editing", (d, w) -> {
+                    // Keep editing: dismiss dialog, remain in editor
+                })
+                .show();
     }
 
     private void showDatePicker() {
@@ -249,13 +349,20 @@ public class ReportActivity extends BaseActivity {
                         int count = data.getClipData().getItemCount();
                         for (int i = 0; i < count; i++) {
                             Uri uri = data.getClipData().getItemAt(i).getUri();
+                            try {
+                                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            } catch (Exception ignored) {}
                             if (selectedImageUris.size() < 5) {
                                 selectedImageUris.add(uri);
                             }
                         }
                     } else if (data.getData() != null) {
+                        Uri uri = data.getData();
+                        try {
+                            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        } catch (Exception ignored) {}
                         if (selectedImageUris.size() < 5) {
-                            selectedImageUris.add(data.getData());
+                            selectedImageUris.add(uri);
                         }
                     }
                 }
@@ -266,6 +373,31 @@ public class ReportActivity extends BaseActivity {
             }
             updatePhotoUI();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(android.os.Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("is_existing_draft", isExistingDraft);
+        outState.putString("current_draft_id", currentDraftId);
+        outState.putBoolean("is_discarded", isDiscarded);
+        outState.putBoolean("is_draft_persisted", isDraftPersisted);
+        outState.putString("type", type);
+        outState.putInt("edit_item_id", editItemId);
+        outState.putString("name_text", name != null ? name.getText().toString() : "");
+        outState.putString("desc_text", desc != null ? desc.getText().toString() : "");
+        outState.putString("location_text", location != null ? location.getText().toString() : "");
+        outState.putString("date_text", date != null ? date.getText().toString() : "");
+        outState.putString("contact_text", contact != null ? contact.getText().toString() : "");
+        outState.putInt("category_position", category != null ? category.getSelectedItemPosition() : 0);
+        outState.putString("init_name", initName);
+        outState.putString("init_desc", initDesc);
+        outState.putString("init_loc", initLoc);
+        outState.putString("init_date", initDate);
+        outState.putString("init_contact", initContact);
+        outState.putString("init_cat", initCat);
+        outState.putParcelableArrayList("selected_image_uris", new ArrayList<>(selectedImageUris));
+        outState.putParcelable("photo_uri", photoUri);
     }
 
     private RequestBody text(String value) {
@@ -349,6 +481,8 @@ public class ReportActivity extends BaseActivity {
             @Override public void onResponse(Call<ItemResponse> c, Response<ItemResponse> r) {
                 submit.setEnabled(true);
                 if(r.isSuccessful()) {
+                    isFinishingSuccessfully = true;
+                    com.example.foundit.util.ReportDraftManager.deleteDraft(ReportActivity.this, currentDraftId);
                     toast(editItemId != -1 ? "Report updated." : "Report submitted.");
                     finish();
                 } else {
