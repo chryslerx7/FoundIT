@@ -126,8 +126,8 @@ public class BaseActivity extends AppCompatActivity {
 
     protected boolean requireLogin() {
         if (!session.isLoggedIn()) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            startActivity(new Intent(this, WelcomeActivity.class));
+            finishAffinity();
             return false;
         }
         return true;

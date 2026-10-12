@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rootWelcomeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/foundit_background">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="28dp">
+
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="40dp" />
+
+            <ImageView
+                android:layout_width="96dp"
+                android:layout_height="96dp"
+                android:src="@mipmap/ic_launcher"
+                android:contentDescription="FoundIT Logo"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="FoundIT"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:textColor="@color/foundit_primary"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Find what you&apos;ve lost. Return what you&apos;ve found."
+                android:textSize="16sp"
+                android:textColor="@color/foundit_text_primary"
+                android:gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Your campus-wide hub for recovering misplaced items. Report missing belongings, list found property, and connect securely with others to bring items home."
+                android:textSize="14sp"
+                android:textColor="@color/foundit_text_secondary"
+                android:gravity="center"
+                android:layout_marginBottom="48dp"
+                android:paddingHorizontal="16dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/btnWelcomeLogin"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="LOG IN"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:background="@drawable/bg_blue_button"
+                android:layout_marginBottom="14dp"
+                android:stateListAnimator="@null"
+                app:elevation="0dp" />
+
+            <Button
+                android:id="@+id/btnWelcomeRegister"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="CREATE ACCOUNT"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/foundit_primary"
+                android:background="@drawable/bg_rounded"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_marginBottom="24dp"
+                app:elevation="0dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

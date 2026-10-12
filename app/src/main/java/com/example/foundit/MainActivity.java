@@ -71,7 +71,7 @@ public class MainActivity extends BaseActivity {
 
     private void logoutLocal() {
         session.clear();
-        startActivity(new Intent(this,LoginActivity.class));
-        finish();
+        startActivity(new Intent(this, WelcomeActivity.class));
+        finishAffinity();
     }
 }

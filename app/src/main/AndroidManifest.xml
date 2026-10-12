@@ -41,6 +41,7 @@
         <activity android:name=".ItemDetailActivity" />
         <activity android:name=".ReportActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".SearchActivity" />
+        <activity android:name=".WelcomeActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".RegisterActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".LoginActivity" android:windowSoftInputMode="adjustResize" />
         <activity android:name=".MainActivity" />

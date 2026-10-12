@@ -100,7 +100,7 @@ public class ProfileActivity extends BaseActivity {
                     }
                 } else if (r.code() == 401) {
                     session.clear();
-                    startActivity(new Intent(ProfileActivity.this, LoginActivity.class));
+                    startActivity(new Intent(ProfileActivity.this, WelcomeActivity.class));
                     finishAffinity();
                 } else {
                     toast("Could not load profile (Error " + r.code() + ")");
@@ -124,16 +124,16 @@ public class ProfileActivity extends BaseActivity {
     private void executeLogout() {
         RetrofitClient.api().logout(session.authHeader()).enqueue(new Callback<ApiMessage>() {
             @Override public void onResponse(Call<ApiMessage> c, Response<ApiMessage> r) {
-                session.clear(); goLogin();
+                session.clear(); goWelcome();
             }
             @Override public void onFailure(Call<ApiMessage> c, Throwable t) {
-                session.clear(); goLogin();
+                session.clear(); goWelcome();
             }
         });
     }
 
-    private void goLogin() {
-        startActivity(new Intent(this, LoginActivity.class));
+    private void goWelcome() {
+        startActivity(new Intent(this, WelcomeActivity.class));
         finishAffinity();
     }
 }
