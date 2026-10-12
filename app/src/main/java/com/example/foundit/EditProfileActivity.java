@@ -60,11 +60,67 @@ public class EditProfileActivity extends BaseActivity {
         update.setOnClickListener(v -> update());
         cancel.setOnClickListener(v -> handleCancel());
 
+        android.text.TextWatcher passWatcher = new android.text.TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            @Override public void afterTextChanged(android.text.Editable s) { validateEditPasswordLive(); }
+        };
+        password.addTextChangedListener(passWatcher);
+        confirm.addTextChangedListener(passWatcher);
+
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() {
                 handleCancel();
             }
         });
+    }
+
+    private void validateEditPasswordLive() {
+        String p = password.getText().toString();
+        String pc = confirm.getText().toString();
+        com.google.android.material.textfield.TextInputLayout tilPass = findViewById(R.id.tilEditPassword);
+        com.google.android.material.textfield.TextInputLayout tilConf = findViewById(R.id.tilEditPasswordConfirm);
+
+        if (p.isEmpty()) {
+            if (tilPass != null) {
+                tilPass.setError(null);
+                tilPass.setHelperText(null);
+            }
+            if (tilConf != null) {
+                tilConf.setError(null);
+                tilConf.setHelperText(null);
+            }
+            return;
+        }
+
+        if (p.length() < 8) {
+            if (tilPass != null) {
+                tilPass.setError("Password must be at least 8 characters");
+            }
+        } else {
+            if (tilPass != null) {
+                tilPass.setError(null);
+                tilPass.setHelperText("Valid password");
+                tilPass.setBoxStrokeColor(androidx.core.content.ContextCompat.getColor(this, R.color.foundit_found));
+            }
+        }
+
+        if (pc.isEmpty()) {
+            if (tilConf != null) {
+                tilConf.setError(null);
+                tilConf.setHelperText(null);
+            }
+        } else if (!p.equals(pc)) {
+            if (tilConf != null) {
+                tilConf.setError("Passwords do not match");
+            }
+        } else {
+            if (tilConf != null) {
+                tilConf.setError(null);
+                tilConf.setHelperText("Passwords match");
+                tilConf.setBoxStrokeColor(androidx.core.content.ContextCompat.getColor(this, R.color.foundit_found));
+            }
+        }
     }
 
     private boolean hasChanges() {
@@ -127,9 +183,17 @@ public class EditProfileActivity extends BaseActivity {
             return;
         }
 
-        if (!p.isEmpty() && !p.equals(pc)) {
-            toast("Passwords do not match.");
-            return;
+        if (!p.isEmpty()) {
+            if (p.length() < 8) {
+                toast("Password must be at least 8 characters.");
+                password.requestFocus();
+                return;
+            }
+            if (!p.equals(pc)) {
+                toast("Passwords do not match.");
+                confirm.requestFocus();
+                return;
+            }
         }
 
         MultipartBody.Part part = null;

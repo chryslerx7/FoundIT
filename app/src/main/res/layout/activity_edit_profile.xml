@@ -144,24 +144,53 @@
                 android:textStyle="bold"
                 android:textColor="@color/blue"/>
 
-            <EditText android:id="@+id/etEditPassword"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilEditPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="New Password"
-                android:inputType="textPassword"
-                android:background="@drawable/bg_rounded"
-                android:padding="12dp"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="8dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:endIconMode="password_toggle"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxStrokeColor="@color/foundit_primary">
 
-            <EditText
-                android:id="@+id/etEditPasswordConfirm"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEditPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textColor="@color/foundit_text_primary"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilEditPasswordConfirm"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Confirm New Password"
-                android:inputType="textPassword"
-                android:background="@drawable/bg_rounded"
-                android:padding="12dp"
-                android:layout_marginTop="8dp"/>
+                android:layout_marginTop="12dp"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                app:endIconMode="password_toggle"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp"
+                app:boxStrokeColor="@color/foundit_primary">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEditPasswordConfirm"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:singleLine="true"
+                    android:textColor="@color/foundit_text_primary"/>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
