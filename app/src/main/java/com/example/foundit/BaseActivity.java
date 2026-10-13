@@ -142,4 +142,17 @@ public class BaseActivity extends AppCompatActivity {
         i.putExtra("item_id", id);
         startActivity(i);
     }
+
+    protected void registerFcmToken() {
+        if (session == null || !session.isLoggedIn()) return;
+        com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
+            if (token != null && !token.isEmpty()) {
+                com.example.foundit.api.RetrofitClient.api().registerDeviceToken(session.authHeader(), new com.example.foundit.model.DeviceTokenRequest(token))
+                        .enqueue(new retrofit2.Callback<com.example.foundit.model.ApiMessage>() {
+                            @Override public void onResponse(retrofit2.Call<com.example.foundit.model.ApiMessage> c, retrofit2.Response<com.example.foundit.model.ApiMessage> r) {}
+                            @Override public void onFailure(retrofit2.Call<com.example.foundit.model.ApiMessage> c, Throwable t) {}
+                        });
+            }
+        });
+    }
 }

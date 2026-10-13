@@ -17,6 +17,12 @@ public interface ApiService {
     @POST("logout")
     Call<ApiMessage> logout(@Header("Authorization") String auth);
 
+    @POST("logout")
+    Call<ApiMessage> logout(
+            @Header("Authorization") String auth,
+            @Body DeviceTokenRequest request
+    );
+
     @GET("me")
     Call<User> me(@Header("Authorization") String auth);
 
@@ -167,4 +173,10 @@ public interface ApiService {
 
     @DELETE("conversations/{id}")
     Call<ApiMessage> deleteConversation(@Header("Authorization") String auth, @Path("id") int id);
+
+    @POST("device-token")
+    Call<ApiMessage> registerDeviceToken(
+            @Header("Authorization") String auth,
+            @Body DeviceTokenRequest request
+    );
 }

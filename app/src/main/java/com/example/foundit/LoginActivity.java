@@ -45,6 +45,7 @@ public class LoginActivity extends BaseActivity {
                         setLoading(false);
                         if (r.isSuccessful() && r.body() != null && r.body().token != null) {
                             session.save(r.body().token, r.body().user.name, r.body().user.id, r.body().user.role);
+                            registerFcmToken();
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {

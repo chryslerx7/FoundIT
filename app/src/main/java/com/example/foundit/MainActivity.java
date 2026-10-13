@@ -22,6 +22,16 @@ public class MainActivity extends BaseActivity {
         if (!requireLogin()) return;
         setContentView(R.layout.activity_main);
         applyWindowInsets(findViewById(R.id.rootMainLayout));
+        registerFcmToken();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                    != android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                androidx.core.app.ActivityCompat.requestPermissions(this,
+                        new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 101);
+            }
+        }
+        handleNotificationIntent(getIntent());
 
         hello=findViewById(R.id.tvHello);
         lostCount=findViewById(R.id.tvLostCount);
@@ -73,5 +83,34 @@ public class MainActivity extends BaseActivity {
         session.clear();
         startActivity(new Intent(this, WelcomeActivity.class));
         finishAffinity();
+    }
+
+    @Override protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleNotificationIntent(intent);
+    }
+
+    private void handleNotificationIntent(Intent intent) {
+        if (intent == null) return;
+        String type = intent.getStringExtra("type");
+        if (type == null) return;
+
+        if ("item".equals(type)) {
+            int itemId = intent.getIntExtra("item_id", -1);
+            if (itemId != -1) {
+                openItem(itemId);
+            }
+        } else if ("message".equals(type)) {
+            int conversationId = intent.getIntExtra("conversation_id", -1);
+            if (conversationId != -1) {
+                Intent chatIntent = new Intent(this, ChatActivity.class);
+                chatIntent.putExtra("conversation_id", conversationId);
+                chatIntent.putExtra("other_user_name", "User");
+                startActivity(chatIntent);
+            }
+        } else if ("notification".equals(type)) {
+            startActivity(new Intent(this, NotificationActivity.class));
+        }
     }
 }
