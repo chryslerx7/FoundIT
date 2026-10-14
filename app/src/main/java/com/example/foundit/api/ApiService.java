@@ -174,6 +174,14 @@ public interface ApiService {
     @DELETE("conversations/{id}")
     Call<ApiMessage> deleteConversation(@Header("Authorization") String auth, @Path("id") int id);
 
+    @FormUrlEncoded
+    @POST("conversations/{id}/presence")
+    Call<ApiMessage> sendPresence(
+            @Header("Authorization") String auth,
+            @Path("id") int conversationId,
+            @Field("device_token") String deviceToken
+    );
+
     @POST("device-token")
     Call<ApiMessage> registerDeviceToken(
             @Header("Authorization") String auth,

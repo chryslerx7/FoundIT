@@ -19,15 +19,18 @@ import java.util.List;
 import retrofit2.*;
 
 public class ChatActivity extends BaseActivity {
-    int conversationId;
+    public static ChatActivity activeInstance = null;
+    public int conversationId;
     RecyclerView recycler;
     MessageAdapter adapter;
     List<Message> messages = new ArrayList<>();
     EditText etMessage;
     Handler handler = new Handler();
+    String cachedFcmToken = null;
     Runnable refreshRunnable = new Runnable() {
         @Override public void run() {
             loadMessages();
+            sendPresenceHeartbeat();
             handler.postDelayed(this, 3000);
         }
     };
@@ -62,11 +65,37 @@ public class ChatActivity extends BaseActivity {
 
     @Override protected void onResume() {
         super.onResume();
+        activeInstance = this;
+        sendPresenceHeartbeat();
         handler.postDelayed(refreshRunnable, 3000);
+    }
+
+    private void sendPresenceHeartbeat() {
+        if (cachedFcmToken != null) {
+            sendPresenceToServer(cachedFcmToken);
+        } else {
+            com.google.firebase.messaging.FirebaseMessaging.getInstance().getToken().addOnSuccessListener(token -> {
+                if (token != null && !token.isEmpty()) {
+                    cachedFcmToken = token;
+                    sendPresenceToServer(token);
+                }
+            });
+        }
+    }
+
+    private void sendPresenceToServer(String token) {
+        RetrofitClient.api().sendPresence(session.authHeader(), conversationId, token)
+                .enqueue(new Callback<ApiMessage>() {
+                    @Override public void onResponse(Call<ApiMessage> c, Response<ApiMessage> r) {}
+                    @Override public void onFailure(Call<ApiMessage> c, Throwable t) {}
+                });
     }
 
     @Override protected void onPause() {
         super.onPause();
+        if (activeInstance == this) {
+            activeInstance = null;
+        }
         handler.removeCallbacks(refreshRunnable);
     }
 

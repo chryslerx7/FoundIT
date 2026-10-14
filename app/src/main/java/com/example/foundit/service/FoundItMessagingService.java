@@ -60,11 +60,24 @@ public class FoundItMessagingService extends FirebaseMessagingService {
         if (remoteMessage.getData() != null) {
             String type = remoteMessage.getData().get("type");
             String itemId = remoteMessage.getData().get("item_id");
-            String conversationId = remoteMessage.getData().get("conversation_id");
+            String conversationIdStr = remoteMessage.getData().get("conversation_id");
 
             if (type != null) intent.putExtra("type", type);
             if (itemId != null) intent.putExtra("item_id", Integer.parseInt(itemId));
-            if (conversationId != null) intent.putExtra("conversation_id", Integer.parseInt(conversationId));
+            if (conversationIdStr != null) {
+                int conversationId = Integer.parseInt(conversationIdStr);
+                intent.putExtra("conversation_id", conversationId);
+
+                if ("message".equals(type)) {
+                    android.app.Activity currentActivity = com.example.foundit.FoundItApp.getResumedActivity();
+                    if (currentActivity instanceof com.example.foundit.ChatActivity) {
+                        com.example.foundit.ChatActivity chatActivity = (com.example.foundit.ChatActivity) currentActivity;
+                        if (chatActivity.conversationId == conversationId) {
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
