@@ -262,6 +262,7 @@ public class ItemDetailActivity extends BaseActivity {
         i.putExtra("other_user_name", other);
         i.putExtra("item_name", currentItem != null ? currentItem.item_name : "");
         i.putExtra("chat_subtitle", currentItem != null ? currentItem.item_name : "");
+        i.putExtra("item_id", itemId);
         startActivity(i);
     }
 

@@ -30,4 +30,12 @@ public class Conversation {
     public String createdAt;
     @SerializedName("updated_at")
     public String updatedAt;
+
+    public List<Item> getEligibleItems() {
+        List<Item> items = new java.util.ArrayList<>();
+        if (directItem != null) items.add(directItem);
+        if (lostItem != null) items.add(lostItem);
+        if (foundItem != null) items.add(foundItem);
+        return items;
+    }
 }

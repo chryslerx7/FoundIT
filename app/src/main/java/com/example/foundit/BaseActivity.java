@@ -17,6 +17,7 @@ import com.example.foundit.util.SessionManager;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import java.util.List;
 
 public class BaseActivity extends AppCompatActivity {
     protected SessionManager session;
@@ -154,5 +155,77 @@ public class BaseActivity extends AppCompatActivity {
                         });
             }
         });
+    }
+
+    public void shareItemInChat(com.example.foundit.model.Item item) {
+        if (item == null) return;
+        com.example.foundit.api.RetrofitClient.api().getConversations(session.authHeader())
+                .enqueue(new retrofit2.Callback<com.example.foundit.model.ConversationListResponse>() {
+                    @Override public void onResponse(retrofit2.Call<com.example.foundit.model.ConversationListResponse> c, retrofit2.Response<com.example.foundit.model.ConversationListResponse> r) {
+                        if (r.isSuccessful() && r.body() != null && r.body().conversations != null) {
+                            List<com.example.foundit.model.Conversation> convs = r.body().conversations;
+                            if (convs.isEmpty()) {
+                                new MaterialAlertDialogBuilder(BaseActivity.this)
+                                        .setTitle("No Conversations")
+                                        .setMessage("You have no active conversations. Start a conversation from an item report first.")
+                                        .setPositiveButton("OK", null)
+                                        .show();
+                                return;
+                            }
+
+                            String[] names = new String[convs.size()];
+                            for (int i = 0; i < convs.size(); i++) {
+                                com.example.foundit.model.Conversation conv = convs.get(i);
+                                String title = "Chat #" + conv.id;
+                                if (conv.directItem != null) {
+                                    title = "Chat about " + conv.directItem.item_name;
+                                } else if (conv.lostItem != null && conv.foundItem != null) {
+                                    title = "Match: " + conv.lostItem.item_name + " & " + conv.foundItem.item_name;
+                                }
+                                names[i] = title;
+                            }
+
+                            new MaterialAlertDialogBuilder(BaseActivity.this)
+                                    .setTitle("Choose Conversation")
+                                    .setItems(names, (dialog, which) -> {
+                                        com.example.foundit.model.Conversation selectedConv = convs.get(which);
+                                        confirmAndSendShare(selectedConv, item);
+                                    })
+                                    .setNegativeButton("Cancel", null)
+                                    .show();
+                        } else {
+                            toast("Could not load conversations.");
+                        }
+                    }
+                    @Override public void onFailure(retrofit2.Call<com.example.foundit.model.ConversationListResponse> c, Throwable t) {
+                        toast("Connection failed.");
+                    }
+                });
+    }
+
+    private void confirmAndSendShare(com.example.foundit.model.Conversation conversation, com.example.foundit.model.Item item) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Confirm Sharing")
+                .setMessage("Share report for \"" + item.item_name + "\" in this conversation?")
+                .setNegativeButton("Cancel", null)
+                .setPositiveButton("Share", (d, w) -> {
+                    com.example.foundit.api.RetrofitClient.api().sendMessage(session.authHeader(), conversation.id, "Shared an item report.", "item_share", item.id)
+                            .enqueue(new retrofit2.Callback<com.example.foundit.model.MessageResponse>() {
+                                @Override public void onResponse(retrofit2.Call<com.example.foundit.model.MessageResponse> c, retrofit2.Response<com.example.foundit.model.MessageResponse> r) {
+                                    if (r.isSuccessful()) {
+                                        toast("Item report shared in chat!");
+                                        Intent i = new Intent(BaseActivity.this, ChatActivity.class);
+                                        i.putExtra("conversation_id", conversation.id);
+                                        startActivity(i);
+                                    } else {
+                                        toast("Failed to share report.");
+                                    }
+                                }
+                                @Override public void onFailure(retrofit2.Call<com.example.foundit.model.MessageResponse> c, Throwable t) {
+                                    toast("Connection failed.");
+                                }
+                            });
+                })
+                .show();
     }
 }

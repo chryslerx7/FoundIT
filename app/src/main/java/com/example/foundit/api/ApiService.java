@@ -157,6 +157,9 @@ public interface ApiService {
             @Path("id") int itemId
     );
 
+    @GET("conversations/{id}")
+    Call<ConversationResponse> getConversation(@Header("Authorization") String auth, @Path("id") int id);
+
     @GET("conversations/{id}/messages")
     Call<MessageListResponse> getMessages(@Header("Authorization") String auth, @Path("id") int id);
 
@@ -166,6 +169,16 @@ public interface ApiService {
             @Header("Authorization") String auth,
             @Path("id") int id,
             @Field("message") String message
+    );
+
+    @FormUrlEncoded
+    @POST("conversations/{id}/messages")
+    Call<MessageResponse> sendMessage(
+            @Header("Authorization") String auth,
+            @Path("id") int id,
+            @Field("message") String message,
+            @Field("message_type") String messageType,
+            @Field("item_id") Integer itemId
     );
 
     @DELETE("messages/{id}")

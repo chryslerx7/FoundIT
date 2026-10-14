@@ -3,13 +3,16 @@ package com.example.foundit;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.view.View;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide;
 import com.example.foundit.adapter.MessageAdapter;
 import com.example.foundit.api.RetrofitClient;
 import com.example.foundit.model.*;
@@ -21,6 +24,10 @@ import retrofit2.*;
 public class ChatActivity extends BaseActivity {
     public static ChatActivity activeInstance = null;
     public int conversationId;
+    int pendingItemId = -1;
+    View layoutPendingCard;
+    ImageView ivPendingImage;
+    TextView tvPendingBadge, tvPendingName;
     RecyclerView recycler;
     MessageAdapter adapter;
     List<Message> messages = new ArrayList<>();
@@ -42,6 +49,7 @@ public class ChatActivity extends BaseActivity {
         applyChatWindowInsets(findViewById(R.id.rootChatLayout));
 
         conversationId = getIntent().getIntExtra("conversation_id", -1);
+        pendingItemId = getIntent().getIntExtra("item_id", -1);
         String otherUser = getIntent().getStringExtra("other_user_name");
         String item = getIntent().getStringExtra("item_name");
 
@@ -52,6 +60,19 @@ public class ChatActivity extends BaseActivity {
 
         recycler = findViewById(R.id.recyclerMessages);
         etMessage = findViewById(R.id.etMessage);
+        layoutPendingCard = findViewById(R.id.layoutPendingCard);
+        ivPendingImage = findViewById(R.id.ivPendingImage);
+        tvPendingBadge = findViewById(R.id.tvPendingBadge);
+        tvPendingName = findViewById(R.id.tvPendingName);
+
+        findViewById(R.id.btnRemovePending).setOnClickListener(v -> {
+            pendingItemId = -1;
+            layoutPendingCard.setVisibility(View.GONE);
+        });
+
+        if (pendingItemId != -1) {
+            loadPendingItemPreview(pendingItemId);
+        }
 
         adapter = new MessageAdapter(messages, session.userId(), (msg, pos) -> confirmDeleteMessage(msg, pos));
         recycler.setLayoutManager(new LinearLayoutManager(this));
@@ -61,6 +82,28 @@ public class ChatActivity extends BaseActivity {
         findViewById(R.id.btnSend).setOnClickListener(v -> sendMessage());
 
         loadMessages();
+    }
+
+    private void loadPendingItemPreview(int itemId) {
+        RetrofitClient.api().getItem(session.authHeader(), itemId).enqueue(new Callback<ItemResponse>() {
+            @Override public void onResponse(Call<ItemResponse> c, Response<ItemResponse> r) {
+                if (r.isSuccessful() && r.body() != null && r.body().item != null) {
+                    Item item = r.body().item;
+                    tvPendingName.setText(item.item_name);
+                    boolean isLost = "LOST".equalsIgnoreCase(item.type);
+                    tvPendingBadge.setText(isLost ? "LOST" : "FOUND");
+                    tvPendingBadge.setBackgroundColor(ContextCompat.getColor(ChatActivity.this,
+                            isLost ? R.color.foundit_lost : R.color.foundit_found));
+                    if (item.image_url != null && !item.image_url.isEmpty()) {
+                        Glide.with(ChatActivity.this).load(item.image_url).into(ivPendingImage);
+                    } else {
+                        ivPendingImage.setImageResource(android.R.drawable.ic_menu_gallery);
+                    }
+                    layoutPendingCard.setVisibility(View.VISIBLE);
+                }
+            }
+            @Override public void onFailure(Call<ItemResponse> c, Throwable t) {}
+        });
     }
 
     @Override protected void onResume() {
@@ -109,7 +152,6 @@ public class ChatActivity extends BaseActivity {
                     adapter.notifyDataSetChanged();
                     if (messages.size() > oldSize) recycler.scrollToPosition(messages.size() - 1);
                 } else if (r.code() == 403 || r.code() == 404 || r.code() == 410) {
-                    // Mutually deleted/closed conversation: do not crash; inform and exit.
                     toast("Conversation no longer active. Start a new conversation to contact this user.");
                     finish();
                 }
@@ -120,21 +162,37 @@ public class ChatActivity extends BaseActivity {
 
     private void sendMessage() {
         String msg = etMessage.getText().toString().trim();
-        if (msg.isEmpty()) return;
+        if (pendingItemId == -1 && msg.isEmpty()) return;
 
         etMessage.setText("");
-        RetrofitClient.api().sendMessage(session.authHeader(), conversationId, msg).enqueue(new Callback<MessageResponse>() {
-            @Override public void onResponse(Call<MessageResponse> c, Response<MessageResponse> r) {
-                if (r.isSuccessful() && r.body() != null) {
-                    loadMessages();
-                } else if (r.code() == 410 || r.code() == 403 || r.code() == 404 || r.code() == 422) {
-                    // Server refused delivery into a mutually deleted/closed
-                    // conversation: surface existing-style feedback, no crash.
-                    toast("Conversation no longer active. Start a new conversation to contact this user.");
-                } else toast("Failed to send.");
-            }
-            @Override public void onFailure(Call<MessageResponse> c, Throwable t) { toast("Connection failed."); }
-        });
+        if (pendingItemId != -1) {
+            RetrofitClient.api().sendMessage(session.authHeader(), conversationId, msg.isEmpty() ? "Shared an item report." : msg, "item_share", pendingItemId)
+                    .enqueue(new Callback<MessageResponse>() {
+                        @Override public void onResponse(Call<MessageResponse> c, Response<MessageResponse> r) {
+                            if (r.isSuccessful() && r.body() != null) {
+                                pendingItemId = -1;
+                                if (layoutPendingCard != null) layoutPendingCard.setVisibility(View.GONE);
+                                loadMessages();
+                            } else {
+                                toast("Failed to share report.");
+                            }
+                        }
+                        @Override public void onFailure(Call<MessageResponse> c, Throwable t) {
+                            toast("Connection failed.");
+                        }
+                    });
+        } else {
+            RetrofitClient.api().sendMessage(session.authHeader(), conversationId, msg).enqueue(new Callback<MessageResponse>() {
+                @Override public void onResponse(Call<MessageResponse> c, Response<MessageResponse> r) {
+                    if (r.isSuccessful() && r.body() != null) {
+                        loadMessages();
+                    } else if (r.code() == 410 || r.code() == 403 || r.code() == 404 || r.code() == 422) {
+                        toast("Conversation no longer active. Start a new conversation to contact this user.");
+                    } else toast("Failed to send.");
+                }
+                @Override public void onFailure(Call<MessageResponse> c, Throwable t) { toast("Connection failed."); }
+            });
+        }
     }
 
     private void confirmDeleteMessage(Message msg, int pos) {

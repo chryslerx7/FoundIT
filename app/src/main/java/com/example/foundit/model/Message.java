@@ -9,6 +9,11 @@ public class Message {
     @SerializedName("sender_id")
     public int senderId;
     public String message;
+    @SerializedName("message_type")
+    public String messageType;
+    @SerializedName("item_id")
+    public Integer itemId;
+    public Item item;
     public User sender;
     @SerializedName("created_at")
     public String createdAt;

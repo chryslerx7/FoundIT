@@ -92,6 +92,7 @@ public class PossibleMatchActivity extends BaseActivity {
                     i.putExtra("conversation_id", r.body().conversation.id);
                     i.putExtra("other_user_name", "LOST".equalsIgnoreCase(myItem.type) ? otherItem.user.name : myItem.user.name);
                     i.putExtra("item_name", myItem.item_name);
+                    i.putExtra("item_id", otherItem.id);
                     startActivity(i);
                 } else toast("Could not start chat.");
             }
